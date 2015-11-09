@@ -21,8 +21,10 @@
 		var contentString = '<div class="infoWindow">'+
 			'<h1>Belmar Library</h1>'+
 			'<div class="infoWindowContent">'+
-			'<p><b><a href="http://www.jeffcolibrary.org/locations/belmar-library" target="_blank">Belmar Library</a></b> is part of the ' +
-			'<b><a href="http://www.jeffcolibrary.org/" target="_blank">Jefferson County Public Library</a></b> system. '+
+			'<p><b><a href="http://www.jeffcolibrary.org/locations/belmar-library" target="_blank">'+
+			'Belmar Library</a></b> is part of the ' +
+			'<b><a href="http://www.jeffcolibrary.org/" target="_blank">'+
+			'Jefferson County Public Library</a></b> system. '+
 			'<p class="infoAddress">555 S. Allison Pkwy, Lakewood, CO 80226</p>'+
 			'</div>'+
 			'</div>';
@@ -32,7 +34,7 @@
 		});
 
 		var marker = new google.maps.Marker({
-			position: {lat: 39.706785, lng: -105.084184},
+			position: {lat: 39.706475, lng: -105.084184},
 			map: map,
 			title: "Belmar Library"
 		});
