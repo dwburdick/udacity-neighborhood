@@ -18,10 +18,27 @@
 	    zoom: 16
 	  });
 
+		var contentString = '<div class="infoWindow">'+
+			'<h1>Belmar Library</h1>'+
+			'<div class="infoWindowContent">'+
+			'<p><b>Belmar Library</b> is part of the ' +
+			'<b>Jefferson County Public Library</b> system. '+
+			'<p class="infoAddress">555 S. Allison Pkwy, Lakewood, CO 80226</p>'+
+			'</div>'+
+			'</div>';
+
+		var infowindow = new google.maps.InfoWindow({
+			content: contentString
+		});
+
 		var marker = new google.maps.Marker({
 			position: {lat: 39.706785, lng: -105.084184},
 			map: map,
 			title: "Belmar Library"
+		});
+
+		marker.addListener('click', function(){
+			infowindow.open(map, marker);
 		});
 
 	};
