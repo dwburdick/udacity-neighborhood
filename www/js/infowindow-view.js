@@ -1,4 +1,4 @@
-var markers = [
+var setMarkers = [
 	{
 		title: 'Belmar Library',
 		url: 'http://www.jeffcolibrary.org/locations/belmar-library',

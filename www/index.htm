@@ -8,55 +8,111 @@
 	<title>Belmar</title>
 </head>
 <body>
-
+	<input id="pac-input" class="controls" type="text" placeholder="Search Box">
 	<div id="map"></div>
 	<script type="text/javascript">
 
 	var map;
+
 	function initMap() {
-	  map = new google.maps.Map(document.getElementById('map'), {
-	    center: {lat: 39.706901, lng: -105.084055},
-	    zoom: 15
-	  });
+		map = new google.maps.Map(document.getElementById('map'), {
+			center: {lat: 39.706901, lng: -105.084055},
+			zoom: 15
+		});
 
-	  	for (i in markers) {
-	  		var infoTitle = markers[i].title;
-	  		var url = markers[i].url;
-	  		var blurb = markers[i].blurb;
-	  		var address = markers[i].address;
-	  		var infoLat = markers[i].lat;
-	  		var infoLng = markers[i].lng;
+		// Create the search box and link it to the UI element.
+		var input = document.getElementById('pac-input');
+		var searchBox = new google.maps.places.SearchBox(input);
+		map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
-	  		var contentString = '<div class="infoWindow">'+
-	  			'<h1><a href="' + url + '">' + infoTitle + '</a></h1>' +
-	  			'<div class="infoWindowContent"><p>' + blurb + '</p></div>' +
-	  			'<p class="infoAddress">' + address + '</p></div>';
+		// Bias the SearchBox results towards current map's viewport.
+		map.addListener('bounds_changed', function() {
+		searchBox.setBounds(map.getBounds());
+		});
 
-	  		var infowindow = new google.maps.InfoWindow({
-	  			content: contentString
-	  		});
+		var markers = [];
+		// [START region_getplaces]
+		// Listen for the event fired when the user selects a prediction and retrieve
+		// more details for that place.
+		searchBox.addListener('places_changed', function() {
+		var places = searchBox.getPlaces();
 
-	  		var marker = new google.maps.Marker({
-	  			position: {lat: infoLat, lng: infoLng},
-	  			map: map,
-	  			title: infoTitle,
-	  		});
+		if (places.length == 0) {
+		  return;
+		}
 
-	  		// wrap event listener in IIFE
+		// Clear out the old markers.
+		markers.forEach(function(marker) {
+		  marker.setMap(null);
+		});
+		markers = [];
 
-	  		(function(markerCopy, infoWindowCopy){
-		  		marker.addListener('click', function(){
-					infoWindowCopy.open(map, markerCopy);
+		// For each place, get the icon, name and location.
+		var bounds = new google.maps.LatLngBounds();
+		places.forEach(function(place) {
+		  var icon = {
+		    url: place.icon,
+		    size: new google.maps.Size(71, 71),
+		    origin: new google.maps.Point(0, 0),
+		    anchor: new google.maps.Point(17, 34),
+		    scaledSize: new google.maps.Size(25, 25)
+		  };
+
+		  // Create a marker for each place.
+		  markers.push(new google.maps.Marker({
+		    map: map,
+		    icon: icon,
+		    title: place.name,
+		    position: place.geometry.location
+		  }));
+
+		  if (place.geometry.viewport) {
+		    // Only geocodes have viewport.
+		    bounds.union(place.geometry.viewport);
+		  } else {
+		    bounds.extend(place.geometry.location);
+		  }
+		});
+		map.fitBounds(bounds);
+		});
+		// [END region_getplaces]
+
+		for (i in setMarkers) {
+			var infoTitle = setMarkers[i].title;
+			var url = setMarkers[i].url;
+			var blurb = setMarkers[i].blurb;
+			var address = setMarkers[i].address;
+			var infoLat = setMarkers[i].lat;
+			var infoLng = setMarkers[i].lng;
+
+			var contentString = '<div class="infoWindow">'+
+				'<h1><a href="' + url + '">' + infoTitle + '</a></h1>' +
+				'<div class="infoWindowContent"><p>' + blurb + '</p></div>' +
+				'<p class="infoAddress">' + address + '</p></div>';
+
+			var infowindow = new google.maps.InfoWindow({
+				content: contentString
+			});
+
+			var marker = new google.maps.Marker({
+				position: {lat: infoLat, lng: infoLng},
+				map: map,
+				title: infoTitle,
+			});
+
+			// wrap event listener in IIFE
+			(function(markerCopy, infoWindowCopy){
+				marker.addListener('click', function(){
+				infoWindowCopy.open(map, markerCopy);
 				});
 			})(marker, infowindow);
-	  	};
-	};
+		};
 
+	};
 
     </script>
     <script async defer
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-dxArQFJ52v-62lleBgjBa3JxjUYuwM0&callback=initMap">
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-dxArQFJ52v-62lleBgjBa3JxjUYuwM0&libraries=places&callback=initMap">
     </script>
-
 </body>
 </html>
