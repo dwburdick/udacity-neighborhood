@@ -4,6 +4,7 @@
 
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 	<script src="js/knockout-3.3.0.js"></script>
+	<script src="js/infowindow-view.js"></script>
 	<title>Belmar</title>
 </head>
 <body>
@@ -18,31 +19,34 @@
 	    zoom: 16
 	  });
 
-		var contentString = '<div class="infoWindow">'+
-			'<h1>Belmar Library</h1>'+
-			'<div class="infoWindowContent">'+
-			'<p><b><a href="http://www.jeffcolibrary.org/locations/belmar-library" target="_blank">'+
-			'Belmar Library</a></b> is part of the ' +
-			'<b><a href="http://www.jeffcolibrary.org/" target="_blank">'+
-			'Jefferson County Public Library</a></b> system. '+
-			'<p class="infoAddress">555 S. Allison Pkwy, Lakewood, CO 80226</p>'+
-			'</div>'+
-			'</div>';
+	  	for (i in markers) {
+	  		console.log(markers[i].title);
+	  		var infoTitle = markers[i].title;
+	  		var url = markers[i].url;
+	  		var blurb = markers[i].blurb;
+	  		var address = markers[i].address;
+	  		var infoLat = markers[i].lat;
+	  		var infoLng = markers[i].lng;
 
-		var infowindow = new google.maps.InfoWindow({
-			content: contentString
-		});
+	  		var contentString = '<div class="infoWindow">'+
+	  			'<h1><a href="' + url + '">' + infoTitle + '</a></h1>' +
+	  			'<div class="infoWindowContent"><p>' + blurb + '</p></div>' +
+	  			'<p class="infoAddress">' + address + '</p></div>';
 
-		var marker = new google.maps.Marker({
-			position: {lat: 39.706475, lng: -105.084184},
-			map: map,
-			title: "Belmar Library"
-		});
+	  		var infowindow = new google.maps.InfoWindow({
+	  			content: contentString
+	  		});
 
-		marker.addListener('click', function(){
-			infowindow.open(map, marker);
-		});
+	  		var marker = new google.maps.Marker({
+	  			position: {lat: infoLat, lng: infoLng},
+	  			map: map,
+	  			title: infoTitle,
+	  		});
 
+	  		marker.addListener('click', function(){
+				infowindow.open(map, marker);
+			});
+	  	};
 	};
 
 
