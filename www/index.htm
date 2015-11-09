@@ -20,7 +20,6 @@
 	  });
 
 	  	for (i in markers) {
-	  		console.log(markers[i].title);
 	  		var infoTitle = markers[i].title;
 	  		var url = markers[i].url;
 	  		var blurb = markers[i].blurb;
@@ -43,9 +42,13 @@
 	  			title: infoTitle,
 	  		});
 
-	  		marker.addListener('click', function(){
-				infowindow.open(map, marker);
-			});
+	  		// wrap event listener in IIFE
+
+	  		(function(markerCopy, infoWindowCopy){
+		  		marker.addListener('click', function(){
+					infoWindowCopy.open(map, markerCopy);
+				});
+			})(marker, infowindow);
 	  	};
 	};
 
