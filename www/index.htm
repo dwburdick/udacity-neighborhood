@@ -12,7 +12,7 @@
 	<div id="wrapper">
 		<div id="mapList">
 			<ul data-bind="foreach: setMarkers">
-				<li data-bind="attr: {id: $index}"><a data-bind="attr: {href: url}, text:title"></a></li>
+				<li data-bind="attr: {id: $index}"><a href="#" data-bind="text:title"></a></li>
 			</ul>
 		</div>
 		<div id="map"></div>
@@ -89,6 +89,8 @@
 		});
 		// [END region_getplaces]
 
+		var counter = 0;
+
 		for (i in setMarkers) {
 			var infoTitle = setMarkers[i].title;
 			var url = setMarkers[i].url;
@@ -113,11 +115,16 @@
 			});
 
 			// wrap event listener in IIFE
-			(function(markerCopy, infoWindowCopy){
+			(function(markerCopy, infoWindowCopy, counterCopy){
 				marker.addListener('click', function(){
 				infoWindowCopy.open(map, markerCopy);
 				});
-			})(marker, infowindow);
+				$("#" + counterCopy).click(function(){
+				infoWindowCopy.open(map, markerCopy);
+				});
+			})(marker, infowindow, counter);
+
+			counter++;
 		};
 
 	};
