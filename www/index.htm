@@ -11,7 +11,8 @@
 	<input id="pac-input" class="controls" type="text" placeholder="Search Box">
 	<div id="wrapper">
 		<div id="mapList">
-			<ul data-bind="foreach: setMarkers">
+			<p><a href="#" id="listToggle">show / hide list</a></p>
+			<ul data-bind="foreach: setMarkers" id="mapListItems">
 				<li data-bind="attr: {id: $index}"><a href="#" data-bind="text:title"></a></li>
 			</ul>
 		</div>
@@ -105,7 +106,7 @@
 				'<p class="infoAddress">' + address + '</p></div>';
 
 			if (setMarkers[i].showtimes) {
-				contentString = contentString + '<div>Currently showing:</div><div data-bind="foreach: showtimes"><div data-bind="text: $data"></div>, </div>'
+				contentString = contentString + '<div>Currently showing:</div><div data-bind="foreach: showtimes"><div data-bind="text: $data"></div></div>'
 			}
 
 			var infowindow = new google.maps.InfoWindow({

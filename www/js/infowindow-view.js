@@ -53,5 +53,9 @@ var loadShowtimes = function(){
 };
 
 $(document).ready(function(){
+	$("#listToggle").click(function(){
+		console.log("CLICK");
+		$("#mapListItems").toggle();
+	});
 	window.setTimeout(loadShowtimes, 1500);
 });
