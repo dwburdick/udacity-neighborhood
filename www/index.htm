@@ -121,9 +121,11 @@
 
 			// wrap event listener in IIFE
 			(function(markerCopy, infoWindowCopy, counterCopy){
+				// click listener for marker pins
 				marker.addListener('click', function(){
 				infoWindowCopy.open(map, markerCopy);
 				});
+				// click listener for list of places
 				$("#" + counterCopy).click(function(){
 				infoWindowCopy.open(map, markerCopy);
 				});

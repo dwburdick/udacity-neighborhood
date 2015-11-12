@@ -38,6 +38,7 @@ var ViewModel = function() {	setMarkers = [
 	var yyyy = today.getFullYear();
 	var mm = today.getMonth() + 1;
 	var dd = today.getDate();
+	//get showtime data from gracenote
 	movies = $.ajax("http://data.tmsapi.com/v1.1/movies/showings?startDate=" + yyyy + "-" + mm + "-"+ dd + "&numDays=1&lat=39.708582&lng=-105.076251%radius=1&units=mi&api_key=5p8sgppbuvrcwt9h6szyjy3u");
 	showtimes = ko.observableArray([]);
 }
@@ -54,7 +55,6 @@ var loadShowtimes = function(){
 
 $(document).ready(function(){
 	$("#listToggle").click(function(){
-		console.log("CLICK");
 		$("#mapListItems").toggle();
 	});
 	window.setTimeout(loadShowtimes, 1500);
