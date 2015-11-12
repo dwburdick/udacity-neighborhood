@@ -105,6 +105,8 @@
 				'<div class="infoWindowContent"><p>' + blurb + '</p></div>' +
 				'<p class="infoAddress">' + address + '</p></div>';
 
+			/* currently, this data-bind isn't working. have tested in static html and it does work.
+			must be something to do with when this html is getting written to DOM. */
 			if (setMarkers[i].showtimes) {
 				contentString = contentString + '<div>Currently showing:</div><div data-bind="foreach: showtimes"><div data-bind="text: $data"></div></div>'
 			}
@@ -137,9 +139,9 @@
 	};
 
     </script>
-    <script src="js/infowindow-view.js"></script>
     <script async defer
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-dxArQFJ52v-62lleBgjBa3JxjUYuwM0&libraries=places&callback=initMap">
     </script>
+    <script src="js/infowindow-view.js"></script>
 </body>
 </html>
