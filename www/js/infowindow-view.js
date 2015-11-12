@@ -24,3 +24,5 @@ var setMarkers = [
 			lng: -105.080060
 		}
 	]
+
+ko.applyBindings(setMarkers);
