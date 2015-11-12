@@ -104,6 +104,10 @@
 				'<div class="infoWindowContent"><p>' + blurb + '</p></div>' +
 				'<p class="infoAddress">' + address + '</p></div>';
 
+			if (setMarkers[i].showtimes) {
+				contentString = contentString + '<div>Currently showing:</div><div data-bind="foreach: showtimes"><div data-bind="text: $data"></div>, </div>'
+			}
+
 			var infowindow = new google.maps.InfoWindow({
 				content: contentString
 			});
