@@ -42,7 +42,31 @@ var ViewModel = {
 		ko.applyBindings({markerList, listAdd});
 	},
 	markerUpdate: function() {
-		console.log("Updated!")
+		console.log("Updated!");
+		ViewModel.markers.reverse();
+		var marker = new google.maps.Marker({
+			position: {lat: ViewModel.markers()[0].lat, lng: ViewModel.markers()[0].lng},
+			map: map,
+			title: ViewModel.markers()[0].title,
+		});
+		var markerIndex = ViewModel.markers().length;
+		ViewModel.markers.reverse();
+		// wrap event listener in IIFE
+		(function(markerCopy, infoWindowCopy, counterCopy){
+			// click listener for marker pins
+			marker.addListener('click', function(){
+				infoWindowCopy.open(map, markerCopy);
+				markerCopy.setAnimation(google.maps.Animation.BOUNCE);
+			});
+			infowindow.addListener('closeclick', function(){
+				markerCopy.setAnimation(null);
+			})
+			// click listener for list of places
+			$("#" + counterCopy).click(function(){
+				infoWindowCopy.open(map, markerCopy);
+				markerCopy.setAnimation(google.maps.Animation.BOUNCE);
+			});
+		})(marker, infowindow, markerIndex);
 	},
 	markers: ko.observableArray([
 		{

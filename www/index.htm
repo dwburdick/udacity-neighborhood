@@ -12,7 +12,8 @@
 	<div id="wrapper">
 		<div id="mapList">
 			<p><a href="#" id="listToggle">show / hide list</a></p>
-			<ul data-bind="foreach: {data: ViewModel.markers, afterAdd: listAdd}" id="mapListItems"><li data-bind="attr: {id: $index}"><a href="#" data-bind="text:title"></a></li></ul>
+			<ul data-bind="foreach: {data: ViewModel.markers, afterAdd: listAdd}" id="mapListItems"><li data-bind="attr: {id: $index}"><a href="#" data-bind="text:title"></a></li>
+			</ul>
 			</div>
 		</div>
 		<div id="map"></div>
