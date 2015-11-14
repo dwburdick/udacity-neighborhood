@@ -84,8 +84,8 @@ var ViewModel = {
 				url: 'http://dmgcolorado.com/',
 				address: '1050 S. Wadsworth Blvd., Lakewood, CO 80226',
 				blurb: 'Never been here, wonder how the selection is.',
-				lat: 39.698142,
-				lng: -105.080060
+				lat: 39.697449,
+				lng: -105.080075
 			}
 		]
 	},
