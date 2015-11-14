@@ -22,7 +22,12 @@ var Model = {
 		date = yyyy + "-" + mm + "-"+ dd;
 	},
 	getMovies: function() {
-		movies = $.ajax("http://data.tmsapi.com/v1.1/movies/showings?startDate=" + date + "&numDays=1&lat=39.708582&lng=-105.076251%radius=1&units=mi&api_key=5p8sgppbuvrcwt9h6szyjy3u");
+		movies = $.ajax("http://data.tmsapi.com/v1.1/movies/showings?startDate=" +
+			date + "&numDays=1&lat=39.708582&lng=-105.076251%radius=1&units=mi&api_key=5p8sgppbuvrcwt9h6szyjy3u", {
+				error: function(){
+					$showtimes.append("<br>There was a problem getting a list of films.<br> Visit the theater's site for information.");
+				}
+			});
 		showtimes = ko.observableArray([]);
 	},
 };
