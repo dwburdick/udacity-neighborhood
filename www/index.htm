@@ -15,6 +15,7 @@
 			<ul data-bind="foreach: setMarkers" id="mapListItems">
 				<li data-bind="attr: {id: $index}"><a href="#" data-bind="text:title"></a></li>
 			</ul>
+			<div id="nowShowing">Currently showing:</div><div data-bind="foreach: showtimes"><div data-bind="text: $data"></div></div>
 		</div>
 		<div id="map"></div>
 	</div>

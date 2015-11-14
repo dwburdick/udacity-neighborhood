@@ -1,3 +1,21 @@
+var Model = {
+	init: function() {
+		Model.getDate();
+		Model.getMovies();
+	},
+	getDate: function() {
+		var today = new Date();
+		var yyyy = today.getFullYear();
+		var mm = today.getMonth() + 1;
+		var dd = today.getDate();
+		date = yyyy + "-" + mm + "-"+ dd;
+	},
+	getMovies: function() {
+		movies = $.ajax("http://data.tmsapi.com/v1.1/movies/showings?startDate=" + date + "&numDays=1&lat=39.708582&lng=-105.076251%radius=1&units=mi&api_key=5p8sgppbuvrcwt9h6szyjy3u");
+		showtimes = ko.observableArray([]);
+	},
+};
+
 var ViewModel = function() {	setMarkers = [
 			{
 				title: 'Belmar Library',
@@ -33,16 +51,9 @@ var ViewModel = function() {	setMarkers = [
 				lng: -105.080060
 			}
 		]
-
-	var today = new Date();
-	var yyyy = today.getFullYear();
-	var mm = today.getMonth() + 1;
-	var dd = today.getDate();
-	//get showtime data from gracenote
-	movies = $.ajax("http://data.tmsapi.com/v1.1/movies/showings?startDate=" + yyyy + "-" + mm + "-"+ dd + "&numDays=1&lat=39.708582&lng=-105.076251%radius=1&units=mi&api_key=5p8sgppbuvrcwt9h6szyjy3u");
-	showtimes = ko.observableArray([]);
 }
 
+Model.init();
 ViewModel();
 
 ko.applyBindings(new ViewModel);
