@@ -70,5 +70,5 @@ $(document).ready(function(){
 	$("#listToggle").click(function(){
 		$("#mapListItems").toggle();
 	});
-	window.setTimeout(loadShowtimes, 1500);
+	window.setTimeout(loadShowtimes, 500);
 });
