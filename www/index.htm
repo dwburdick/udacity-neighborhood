@@ -12,7 +12,7 @@
 	<div id="wrapper">
 		<div id="mapList">
 			<p><a href="#" id="listToggle">show / hide list</a></p>
-			<ul data-bind="foreach: setMarkers" id="mapListItems">
+			<ul data-bind="foreach: ViewModel.markers" id="mapListItems">
 				<li data-bind="attr: {id: $index}"><a href="#" data-bind="text:title"></a></li>
 			</ul>
 			</div>
@@ -94,25 +94,25 @@
 
 		var counter = 0;
 
-		for (i in setMarkers) {
-			var infoTitle = setMarkers[i].title;
-			var url = setMarkers[i].url;
-			var blurb = setMarkers[i].blurb;
-			var address = setMarkers[i].address;
-			var infoLat = setMarkers[i].lat;
-			var infoLng = setMarkers[i].lng;
+		for (i in ViewModel.markers()) {
+			var infoTitle = ViewModel.markers()[i].title;
+			var url = ViewModel.markers()[i].url;
+			var blurb = ViewModel.markers()[i].blurb;
+			var address = ViewModel.markers()[i].address;
+			var infoLat = ViewModel.markers()[i].lat;
+			var infoLng = ViewModel.markers()[i].lng;
 
 			var contentString = '<div class="infoWindow">'+
 				'<h1><a href="' + url + '">' + infoTitle + '</a></h1>' +
 				'<div class="infoWindowContent"><p>' + blurb + '</p></div>' +
 				'<p class="infoAddress">' + address + '</p></div>';
 
-			if (!setMarkers[i].showtimes) {
+			if (!ViewModel.markers()[i].showtimes) {
 				var infowindow = new google.maps.InfoWindow({
 					content: contentString
 				});
 			} else {
-				// this fires if setMarkers[i].showtimes == true
+				// this fires if ViewModel.markers()[i].showtimes == true
 				$showtimes.prepend(contentString);
 				var infowindow = new google.maps.InfoWindow({
 					content: $showtimes[0]
