@@ -56,11 +56,11 @@
 		  return;
 		}
 
-		// Clear out the old markers.
+		/* Clear out the old markers.
 		markers.forEach(function(marker) {
 		  marker.setMap(null);
 		});
-		markers = [];
+		markers = []; */
 
 		// For each place, get the icon, name and location.
 		var bounds = new google.maps.LatLngBounds();
@@ -135,7 +135,8 @@
 				})
 				// click listener for list of places
 				$("#" + counterCopy).click(function(){
-				infoWindowCopy.open(map, markerCopy);
+					infoWindowCopy.open(map, markerCopy);
+					markerCopy.setAnimation(google.maps.Animation.BOUNCE);
 				});
 			})(marker, infowindow, counter);
 
