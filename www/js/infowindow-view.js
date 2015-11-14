@@ -51,7 +51,9 @@ var ViewModel = function() {	setMarkers = [
 				lng: -105.080060
 			}
 		]
-}
+};
+
+$showtimes = $("#nowShowing");
 
 Model.init();
 ViewModel();

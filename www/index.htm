@@ -15,10 +15,11 @@
 			<ul data-bind="foreach: setMarkers" id="mapListItems">
 				<li data-bind="attr: {id: $index}"><a href="#" data-bind="text:title"></a></li>
 			</ul>
-			<div id="nowShowing">Currently showing:</div><div data-bind="foreach: showtimes"><div data-bind="text: $data"></div></div>
+			</div>
 		</div>
 		<div id="map"></div>
 	</div>
+	<div id="nowShowing">Currently showing:<div data-bind="foreach: showtimes"><div data-bind="text: $data"></div></div>
 	<script type="text/javascript">
 
 	$(function () {
@@ -106,22 +107,22 @@
 				'<div class="infoWindowContent"><p>' + blurb + '</p></div>' +
 				'<p class="infoAddress">' + address + '</p></div>';
 
-			/* currently, this data-bind isn't working. have tested in static html and it does work.
-			must be something to do with when this html is getting written to DOM. */
-			if (setMarkers[i].showtimes) {
-				contentString = contentString + '<div>Currently showing:</div><div data-bind="foreach: showtimes"><div data-bind="text: $data"></div></div>'
-			}
-
-			var infowindow = new google.maps.InfoWindow({
-				content: contentString
-			});
-
+			if (!setMarkers[i].showtimes) {
+				var infowindow = new google.maps.InfoWindow({
+					content: contentString
+				});
+			} else {
+				// this fires if setMarkers[i].showtimes == true
+				$showtimes.prepend(contentString);
+				var infowindow = new google.maps.InfoWindow({
+					content: $showtimes[0]
+				});
+			};
 			var marker = new google.maps.Marker({
 				position: {lat: infoLat, lng: infoLng},
 				map: map,
 				title: infoTitle,
 			});
-
 			// wrap event listener in IIFE
 			(function(markerCopy, infoWindowCopy, counterCopy){
 				// click listener for marker pins
