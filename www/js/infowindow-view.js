@@ -2,6 +2,17 @@ var Model = {
 	init: function() {
 		Model.getDate();
 		Model.getMovies();
+		$(document).ready(function(){
+			$("#listToggle").click(function(){
+				$("#mapListItems").toggle();
+			});
+			window.setTimeout(Model.loadMovies, 500);
+		});
+	},
+	loadMovies: function(){
+		for (i in movies.responseJSON) {
+		showtimes.push(movies.responseJSON[i].title);
+		};
 	},
 	getDate: function() {
 		var today = new Date();
@@ -16,7 +27,15 @@ var Model = {
 	},
 };
 
-var ViewModel = function() {	setMarkers = [
+var ViewModel = {
+	init: function() {
+		Model.init();
+		View.init();
+		ViewModel.markers();
+		ko.applyBindings(new ViewModel.markers);
+	},
+	markers: function() {
+		setMarkers = [
 			{
 				title: 'Belmar Library',
 				url: 'http://www.jeffcolibrary.org/locations/belmar-library',
@@ -24,6 +43,14 @@ var ViewModel = function() {	setMarkers = [
 				blurb: 'The roof is shaped like an open book.',
 				lat: 39.706475,
 				lng: -105.084184
+			},
+			{
+				title: 'Belmar Park playground',
+				url: 'http://www.lakewood.org/BelmarPark/',
+				address: '801 S. Wadsworth Blvd., Lakewood, CO 80226',
+				blurb: 'An unusual playground with faux rocks and ropes to climb and balance on.<br> The rest of the park is cool, too.',
+				lat: 39.706528,
+				lng: -105.089693
 			},
 			{
 				title: 'Caution Brewing Co.',
@@ -51,24 +78,14 @@ var ViewModel = function() {	setMarkers = [
 				lng: -105.080060
 			}
 		]
+	}
 };
 
-$showtimes = $("#nowShowing");
+var View = {
+	init: function(){
+		$showtimes = $("#nowShowing");
+	}
+}
 
-Model.init();
-ViewModel();
+ViewModel.init();
 
-ko.applyBindings(new ViewModel);
-
-var loadShowtimes = function(){
-	for (i in movies.responseJSON) {
-	showtimes.push(movies.responseJSON[i].title);
-	};
-};
-
-$(document).ready(function(){
-	$("#listToggle").click(function(){
-		$("#mapListItems").toggle();
-	});
-	window.setTimeout(loadShowtimes, 500);
-});
