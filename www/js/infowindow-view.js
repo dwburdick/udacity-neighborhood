@@ -37,7 +37,12 @@ var ViewModel = {
 		Model.init();
 		View.init();
 		ViewModel.markers();
-		ko.applyBindings(ViewModel.markers);
+		markerList = ViewModel.markers;
+		listAdd = ViewModel.markerUpdate;
+		ko.applyBindings({markerList, listAdd});
+	},
+	markerUpdate: function() {
+		console.log("Updated!")
 	},
 	markers: ko.observableArray([
 		{
