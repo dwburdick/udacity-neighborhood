@@ -57,22 +57,7 @@ var ViewModel = {
 			content: contentString
 		});
 
-		// wrap event listener in IIFE
-		(function(markerCopy, infoWindowCopy, counterCopy){
-			// click listener for marker pins
-			marker.addListener('click', function(){
-				infoWindowCopy.open(map, markerCopy);
-				markerCopy.setAnimation(google.maps.Animation.BOUNCE);
-			});
-			infowindow.addListener('closeclick', function(){
-				markerCopy.setAnimation(null);
-			})
-			// click listener for list of places
-			$("#" + counterCopy).click(function(){
-				infoWindowCopy.open(map, markerCopy);
-				markerCopy.setAnimation(google.maps.Animation.BOUNCE);
-			});
-		})(marker, infowindow, markerIndex);
+		View.addListeners(marker, infowindow, markerIndex);
 	},
 	markers: ko.observableArray([
 		{
@@ -129,7 +114,22 @@ var ViewModel = {
 var View = {
 	init: function(){
 		$showtimes = $("#nowShowing");
-	}
+	},
+	addListeners: function(markerCopy, infoWindowCopy, counterCopy){
+		// click listener for marker pins
+		markerCopy.addListener('click', function(){
+			infoWindowCopy.open(map, markerCopy);
+			markerCopy.setAnimation(google.maps.Animation.BOUNCE);
+		});
+		infoWindowCopy.addListener('closeclick', function(){
+			markerCopy.setAnimation(null);
+		})
+		// click listener for list of places
+		$("#new" + counterCopy).click(function(){
+			infoWindowCopy.open(map, markerCopy);
+			markerCopy.setAnimation(google.maps.Animation.BOUNCE);
+		});
+	},
 }
 
 ViewModel.init();

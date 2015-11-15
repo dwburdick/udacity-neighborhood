@@ -63,54 +63,39 @@
 		// For each place, get the icon, name and location.
 		var bounds = new google.maps.LatLngBounds();
 		places.forEach(function(place) {
-		  var icon = {
-		    url: place.icon,
-		    size: new google.maps.Size(71, 71),
-		    origin: new google.maps.Point(0, 0),
-		    anchor: new google.maps.Point(17, 34),
-		    scaledSize: new google.maps.Size(25, 25)
-		  };
-		  // Create a marker for each place.
-		  var marker = new google.maps.Marker({
-		    map: map,
-		    icon: icon,
-		    title: place.name,
-		    position: place.geometry.location
-		  });
-		  markers.push(marker);
-		  if (place.geometry.viewport) {
-		    // Only geocodes have viewport.
-		    bounds.union(place.geometry.viewport);
-		  } else {
-		    bounds.extend(place.geometry.location);
-		  }
-		  var infoTitle = place.name;
-		  var address = place.formatted_address;
-		  // Create an infowindow for each place.
-		  var contentString = '<div class="infoWindow">'+
+			var icon = {
+			url: place.icon,
+			size: new google.maps.Size(71, 71),
+			origin: new google.maps.Point(0, 0),
+			anchor: new google.maps.Point(17, 34),
+			scaledSize: new google.maps.Size(25, 25)
+			};
+			// Create a marker for each place.
+			var marker = new google.maps.Marker({
+			map: map,
+			icon: icon,
+			title: place.name,
+			position: place.geometry.location
+			});
+			markers.push(marker);
+			if (place.geometry.viewport) {
+			// Only geocodes have viewport.
+			bounds.union(place.geometry.viewport);
+			} else {
+			bounds.extend(place.geometry.location);
+			}
+			var infoTitle = place.name;
+			var address = place.formatted_address;
+			// Create an infowindow for each place.
+			var contentString = '<div class="infoWindow">'+
 				'<h1>' + infoTitle + '</h1>' +
 				'<div class="infoWindowContent"><p></p></div>' +
 				'<p class="infoAddress">' + address + '</p></div>';
-		  var infowindow = new google.maps.InfoWindow({
+			var infowindow = new google.maps.InfoWindow({
 					content: contentString
 				});
-		  	newCounter = 0;
-  			// wrap event listener in IIFE
-			(function(markerCopy, infoWindowCopy, counterCopy){
-				// click listener for marker pins
-				marker.addListener('click', function(){
-					infoWindowCopy.open(map, markerCopy);
-					markerCopy.setAnimation(google.maps.Animation.BOUNCE);
-				});
-				infowindow.addListener('closeclick', function(){
-					markerCopy.setAnimation(null);
-				})
-				// click listener for list of places
-				$("#new" + counterCopy).click(function(){
-					infoWindowCopy.open(map, markerCopy);
-					markerCopy.setAnimation(google.maps.Animation.BOUNCE);
-				});
-			})(marker, infowindow, newCounter);
+			newCounter = 0;
+			View.addListeners(marker, infowindow, newCounter);
 			newCounter++;
 		});
 		map.fitBounds(bounds);
@@ -147,22 +132,7 @@
 				map: map,
 				title: infoTitle,
 			});
-			// wrap event listener in IIFE
-			(function(markerCopy, infoWindowCopy, counterCopy){
-				// click listener for marker pins
-				marker.addListener('click', function(){
-					infoWindowCopy.open(map, markerCopy);
-					markerCopy.setAnimation(google.maps.Animation.BOUNCE);
-				});
-				infowindow.addListener('closeclick', function(){
-					markerCopy.setAnimation(null);
-				})
-				// click listener for list of places
-				$("#" + counterCopy).click(function(){
-					infoWindowCopy.open(map, markerCopy);
-					markerCopy.setAnimation(google.maps.Animation.BOUNCE);
-				});
-			})(marker, infowindow, counter);
+			View.addListeners(marker, infowindow, counter);
 			counter++;
 		};
 
