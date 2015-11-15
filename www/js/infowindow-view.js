@@ -52,12 +52,11 @@ var ViewModel = {
 			'<h1>' + newMarker.title + '</h1>' +
 			'<div class="infoWindowContent"><p>User-added item</p></div>' +
 			'<p class="infoAddress">Address goes here</p></div>';
-
 		var infowindow = new google.maps.InfoWindow({
 			content: contentString
 		});
-
-		View.addListeners(marker, infowindow, markerIndex);
+		View.addListeners(marker, infowindow, counter);
+		counter++;
 	},
 	markers: ko.observableArray([
 		{
@@ -109,6 +108,13 @@ var ViewModel = {
 		}
 	]),
 	clickedMarkers: [''],
+	addMarker: function(markerTitle, markerLat, markerLng){
+		ViewModel.markers.push({
+			title: markerTitle,
+			lat: markerLat,
+			lng: markerLng
+		})
+	},
 };
 
 var View = {
@@ -125,7 +131,7 @@ var View = {
 			markerCopy.setAnimation(null);
 		})
 		// click listener for list of places
-		$("#new" + counterCopy).click(function(){
+		$("#" + counterCopy).click(function(){
 			infoWindowCopy.open(map, markerCopy);
 			markerCopy.setAnimation(google.maps.Animation.BOUNCE);
 		});
