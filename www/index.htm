@@ -12,8 +12,8 @@
 	<div id="wrapper">
 		<div id="mapList">
 			<p><a href="#" id="listToggle">show / hide list</a></p>
-			<ul data-bind="foreach: {data: ViewModel.markers, afterAdd: listAdd}" id="mapListItems"><li data-bind="attr: {id: $index}"><a href="#" data-bind="text:title"></a></li>
-			</ul>
+			<!-- RIGHT NOW THIS DATA BIND PUSHES EVERY USER-ADDED ITEM TO THE LIST EACH TIME IT IS CALLED, EVEN IF IT IS ALREADY LISTED -->
+			<ul data-bind="foreach: {data: ViewModel.markers, afterAdd: ViewModel.markerUpdate}" id="mapListItems"><li data-bind="attr: {id: $index}"><a href="#" data-bind="text:title"></a></li></ul>
 			</div>
 		</div>
 		<div id="map"></div>

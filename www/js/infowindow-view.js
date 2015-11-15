@@ -37,20 +37,17 @@ var ViewModel = {
 		Model.init();
 		View.init();
 		ViewModel.markers();
-		markerList = ViewModel.markers;
-		listAdd = ViewModel.markerUpdate;
-		ko.applyBindings({markerList, listAdd});
+		ko.applyBindings(ViewModel);
 	},
 	markerUpdate: function() {
 		console.log("Updated!");
-		ViewModel.markers.reverse();
-		var marker = new google.maps.Marker({
-			position: {lat: ViewModel.markers()[0].lat, lng: ViewModel.markers()[0].lng},
-			map: map,
-			title: ViewModel.markers()[0].title,
-		});
 		var markerIndex = ViewModel.markers().length;
-		ViewModel.markers.reverse();
+		var newMarker = ViewModel.markers()[markerIndex - 1];
+		var marker = new google.maps.Marker({
+			position: {lat: newMarker.lat, lng: newMarker.lng},
+			map: map,
+			title: newMarker.title,
+		});
 		// wrap event listener in IIFE
 		(function(markerCopy, infoWindowCopy, counterCopy){
 			// click listener for marker pins
