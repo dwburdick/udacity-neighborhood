@@ -48,6 +48,15 @@ var ViewModel = {
 			map: map,
 			title: newMarker.title,
 		});
+		var contentString = '<div class="infoWindow">'+
+			'<h1>' + newMarker.title + '</h1>' +
+			'<div class="infoWindowContent"><p>User-added item</p></div>' +
+			'<p class="infoAddress">Address goes here</p></div>';
+
+		var infowindow = new google.maps.InfoWindow({
+			content: contentString
+		});
+
 		// wrap event listener in IIFE
 		(function(markerCopy, infoWindowCopy, counterCopy){
 			// click listener for marker pins
