@@ -12,7 +12,6 @@
 	<div id="wrapper">
 		<div id="mapList">
 			<p><a href="#" id="listToggle">show / hide list</a></p>
-			<!-- RIGHT NOW THIS DATA BIND PUSHES EVERY USER-ADDED ITEM TO THE LIST EACH TIME IT IS CALLED, EVEN IF IT IS ALREADY LISTED -->
 			<ul data-bind="foreach: {data: ViewModel.markers, afterAdd: ViewModel.markerUpdate}" id="mapListItems"><li data-bind="attr: {id: $index}"><a href="#" data-bind="text:title"></a></li></ul>
 			</div>
 		</div>
@@ -55,11 +54,11 @@
 		  return;
 		}
 
-		/* Clear out the old markers.
+		// Clear out the old markers.
 		markers.forEach(function(marker) {
 		  marker.setMap(null);
 		});
-		markers = []; */
+		markers = [];
 
 		// For each place, get the icon, name and location.
 		var bounds = new google.maps.LatLngBounds();
@@ -71,21 +70,48 @@
 		    anchor: new google.maps.Point(17, 34),
 		    scaledSize: new google.maps.Size(25, 25)
 		  };
-
 		  // Create a marker for each place.
-		  markers.push(new google.maps.Marker({
+		  var marker = new google.maps.Marker({
 		    map: map,
 		    icon: icon,
 		    title: place.name,
 		    position: place.geometry.location
-		  }));
-
+		  });
+		  markers.push(marker);
 		  if (place.geometry.viewport) {
 		    // Only geocodes have viewport.
 		    bounds.union(place.geometry.viewport);
 		  } else {
 		    bounds.extend(place.geometry.location);
 		  }
+		  var infoTitle = place.name;
+		  var address = place.formatted_address;
+		  // Create an infowindow for each place.
+		  var contentString = '<div class="infoWindow">'+
+				'<h1>' + infoTitle + '</h1>' +
+				'<div class="infoWindowContent"><p></p></div>' +
+				'<p class="infoAddress">' + address + '</p></div>';
+		  var infowindow = new google.maps.InfoWindow({
+					content: contentString
+				});
+		  	newCounter = 0;
+  			// wrap event listener in IIFE
+			(function(markerCopy, infoWindowCopy, counterCopy){
+				// click listener for marker pins
+				marker.addListener('click', function(){
+					infoWindowCopy.open(map, markerCopy);
+					markerCopy.setAnimation(google.maps.Animation.BOUNCE);
+				});
+				infowindow.addListener('closeclick', function(){
+					markerCopy.setAnimation(null);
+				})
+				// click listener for list of places
+				$("#new" + counterCopy).click(function(){
+					infoWindowCopy.open(map, markerCopy);
+					markerCopy.setAnimation(google.maps.Animation.BOUNCE);
+				});
+			})(marker, infowindow, newCounter);
+			newCounter++;
 		});
 		map.fitBounds(bounds);
 		});
@@ -100,7 +126,6 @@
 			var address = ViewModel.markers()[i].address;
 			var infoLat = ViewModel.markers()[i].lat;
 			var infoLng = ViewModel.markers()[i].lng;
-
 			var contentString = '<div class="infoWindow">'+
 				'<h1><a href="' + url + '">' + infoTitle + '</a></h1>' +
 				'<div class="infoWindowContent"><p>' + blurb + '</p></div>' +
@@ -138,9 +163,6 @@
 					markerCopy.setAnimation(google.maps.Animation.BOUNCE);
 				});
 			})(marker, infowindow, counter);
-
-			// TODO: ADD infowindow when list item and marker get created by pushing object to observable array
-
 			counter++;
 		};
 
