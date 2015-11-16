@@ -2,6 +2,7 @@
 <html>
 <head>
 	<script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
+	<!-- TODO: Firebase is installed; when functionality is complete, start saving items to firebase -->
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 	<script src="js/knockout-3.3.0.js"></script>
@@ -15,6 +16,7 @@
 			<ul data-bind="foreach: {data: ViewModel.markers, afterAdd: ViewModel.markerUpdate}" id="mapListItems"><li data-bind="attr: {id: $index}"><a href="#" data-bind="text:title"></a></li></ul>
 			</div>
 		</div>
+		<!-- TODO: Create a text input for user-generated list items, bypassing search -->
 		<div id="map"></div>
 	</div>
 	<div id="nowShowing">Currently showing:<div data-bind="foreach: showtimes"><span data-bind="text: $data"></span>, </div>
