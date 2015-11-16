@@ -86,6 +86,7 @@
 			bounds.extend(place.geometry.location);
 			}
 			// Add each place to KO observable array, create infowindows and click listeners.
+			// TODO: give each new searched object an index number so the save button can push the correct object into the listed array
 			ViewModel.loadSearch(place, marker, infowindow, newCounter);
 			newCounter++;
 		});
