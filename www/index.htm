@@ -59,9 +59,10 @@
 		  marker.setMap(null);
 		});
 		markers = [];
-
+		ViewModel.unloadSearch();
 		// For each place, get the icon, name and location.
 		var bounds = new google.maps.LatLngBounds();
+		newCounter = 0;
 		places.forEach(function(place) {
 			var icon = {
 			url: place.icon,
@@ -84,18 +85,8 @@
 			} else {
 			bounds.extend(place.geometry.location);
 			}
-			var infoTitle = place.name;
-			var address = place.formatted_address;
-			// Create an infowindow for each place.
-			var contentString = '<div class="infoWindow">'+
-				'<h1>' + infoTitle + '</h1>' +
-				'<div class="infoWindowContent"><p></p></div>' +
-				'<p class="infoAddress">' + address + '</p></div>';
-			var infowindow = new google.maps.InfoWindow({
-					content: contentString
-				});
-			newCounter = 0;
-			View.addListeners(marker, infowindow, newCounter);
+			// Add each place to KO observable array, create infowindows and click listeners.
+			ViewModel.loadSearch(place, marker, infowindow, newCounter);
 			newCounter++;
 		});
 		map.fitBounds(bounds);

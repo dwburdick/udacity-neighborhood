@@ -107,7 +107,33 @@ var ViewModel = {
 			lng: -105.080075
 		}
 	]),
-	clickedMarkers: [''],
+	loadSearch: function(place, marker, infowindow, newCounter){
+		var infoTitle = place.name;
+		var placeAddress = place.formatted_address;
+		var placeLat = place.geometry.location.lat();
+		var placeLng = place.geometry.location.lng();
+		console.log(infoTitle);
+		console.log(placeAddress);
+		ViewModel.searchedMarkers.push({
+			title: infoTitle,
+			address: placeAddress,
+			lat: placeLat,
+			lng: placeLng
+		});
+		var contentString = '<div class="infoWindow">'+
+			'<h1>' + infoTitle + '</h1>' +
+			'<div class="infoWindowContent"><p><input type="button" value="save' + newCounter + '" id="save' + newCounter + '"></p></div>' +
+			'<p class="infoAddress">' + placeAddress + '</p></div>';
+		var infowindow = new google.maps.InfoWindow({
+				content: contentString
+		});
+		// add click listeners
+		View.addListeners(marker, infowindow, newCounter);
+	},
+	unloadSearch: function(){
+		ViewModel.searchedMarkers.removeAll()
+	},
+	searchedMarkers: ko.observableArray([]),
 	addMarker: function(markerTitle, markerLat, markerLng){
 		ViewModel.markers.push({
 			title: markerTitle,
@@ -136,6 +162,15 @@ var View = {
 			markerCopy.setAnimation(google.maps.Animation.BOUNCE);
 		});
 	},
+	saveInit: function(titleCopy, latCopy, lngCopy, saveCount){
+		console.log("saveInit() called");
+		console.log(titleCopy + ' ' + latCopy + ', ' + lngCopy);
+		saveIndex = "#save" + saveCount;
+		($(saveIndex).click(function(){
+			console.log(titleCopy + ' ' + latCopy + ', ' + lngCopy);
+			ViewModel.addMarker(titleCopy, latCopy, lngCopy);
+		}));
+	}
 }
 
 ViewModel.init();
