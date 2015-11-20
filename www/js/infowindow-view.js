@@ -43,7 +43,7 @@ var masterList = [
 			blurb: 'The roof is shaped like an open book.',
 			lat: 39.706475,
 			lng: -105.084184,
-			visibility: ko.observable(true),
+			visibility: ko.observable(true)
 		},
 		{
 			title: 'Belmar Park playground',
@@ -87,6 +87,19 @@ var masterList = [
 			visibility: ko.observable(true)
 		}
 	];
+
+var pinsList = [];
+
+var addMarkers = function(){
+	for (i in masterList) {
+		masterList[i].marker = new google.maps.Marker({
+			position: {lat: masterList[i].lat, lng: masterList[i].lng},
+			map: map,
+			title: masterList[i].title
+		})
+		pinsList.push(masterList[i].marker);
+	}
+};
 
 var viewModel = {
       marks: ko.observableArray(masterList),
