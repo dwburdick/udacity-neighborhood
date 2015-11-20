@@ -111,7 +111,7 @@ var viewModel = {
         for(var x in masterList) {
         	masterList[x].visibility(false);
         	masterList[x].marker.setVisible(false);
-        	if(masterList[x].title.toLowerCase().indexOf(value.toLowerCase()) >= 0) {
+        	if(masterList[x].title.toLowerCase().indexOf(value.toLowerCase()) >= 0 || masterList[x].blurb.toLowerCase().indexOf(value.toLowerCase()) >= 0) {
             	masterList[x].visibility(true);
             	masterList[x].marker.setVisible(true);
           }
