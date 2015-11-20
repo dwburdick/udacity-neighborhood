@@ -103,6 +103,7 @@ var addMarkers = function(){
 
 var viewModel = {
       marks: ko.observableArray(masterList),
+      pins: ko.observableArray(pinsList),
 
       filterQuery: ko.observable(''),
 
