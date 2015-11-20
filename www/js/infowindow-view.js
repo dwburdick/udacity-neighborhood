@@ -88,22 +88,37 @@ var masterList = [
 		}
 	];
 
-var pinsList = [];
-
 var addMarkers = function(){
+	var counter = 0;
 	for (i in masterList) {
 		masterList[i].marker = new google.maps.Marker({
 			position: {lat: masterList[i].lat, lng: masterList[i].lng},
 			map: map,
 			title: masterList[i].title
-		})
-		pinsList.push(masterList[i].marker);
+		});
+		masterList[i].infowindow = new google.maps.InfoWindow({
+			content: i,
+		});
+		(function(markerCopy, infoWindowCopy, counterCopy){
+				// click listener for marker pins
+				markerCopy.addListener('click', function(){
+					infoWindowCopy.open(map, markerCopy);
+					markerCopy.setAnimation(google.maps.Animation.BOUNCE);
+				});
+				infoWindowCopy.addListener('closeclick', function(){
+					markerCopy.setAnimation(null);
+				})
+				// click listener for list of places
+				$("#" + counterCopy).click(function(){
+				infoWindowCopy.open(map, markerCopy);
+				});
+			})(masterList[i].marker, masterList[i].infowindow, counter);
+		counter++
 	}
 };
 
 var viewModel = {
       marks: ko.observableArray(masterList),
-      pins: ko.observableArray(pinsList),
 
       filterQuery: ko.observable(''),
 
