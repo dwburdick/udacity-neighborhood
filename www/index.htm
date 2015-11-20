@@ -8,12 +8,13 @@
 	<title>Belmar</title>
 </head>
 <body>
-	<input id="pac-input" class="controls" type="text" placeholder="Search Box">
+	<input id="pac-input" class="controls" type="text" placeholder="Google Search">
+	<input id="mapFilter" data-bind="value: filterQuery, valueUpdate: 'keyup'" class="controls" type="search" placeholder="Filter Map">
 	<div id="wrapper">
 		<div id="mapList">
 			<p><a href="#" id="listToggle">show / hide list</a></p>
-			<ul data-bind="foreach: setMarkers" id="mapListItems">
-				<li data-bind="attr: {id: $index}"><a href="#" data-bind="text:title"></a></li>
+			<ul data-bind="foreach: marks" id="mapListItems">
+				<li data-bind="attr: {id: $index}, visible: visibility"><a href="#" data-bind="text:title"></a></li>
 			</ul>
 			</div>
 		</div>
@@ -94,7 +95,7 @@
 
 		var counter = 0;
 
-		for (i in setMarkers) {
+		/*for (i in setMarkers) {
 			var infoTitle = setMarkers[i].title;
 			var url = setMarkers[i].url;
 			var blurb = setMarkers[i].blurb;
@@ -138,9 +139,7 @@
 				infoWindowCopy.open(map, markerCopy);
 				});
 			})(marker, infowindow, counter);
-
-			counter++;
-		};
+		};*/
 
 	};
 
