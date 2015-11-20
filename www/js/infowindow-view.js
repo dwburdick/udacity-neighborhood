@@ -110,7 +110,8 @@ var addMarkers = function(){
 				})
 				// click listener for list of places
 				$("#" + counterCopy).click(function(){
-				infoWindowCopy.open(map, markerCopy);
+					infoWindowCopy.open(map, markerCopy);
+					markerCopy.setAnimation(google.maps.Animation.BOUNCE);
 				});
 			})(masterList[i].marker, masterList[i].infowindow, counter);
 		counter++
