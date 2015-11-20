@@ -6,12 +6,12 @@ var Model = {
 			$("#listToggle").click(function(){
 				$("#movieList").toggle();
 			});
-			window.setTimeout(Model.loadMovies, 900);
+			window.setTimeout(Model.loadMoviesArray, 900);
 		});
 	},
-	loadMovies: function(){
+	loadMoviesArray: function(){
 		for (i in movies.responseJSON) {
-		viewModel.showtimes.push(movies.responseJSON[i].title);
+		viewModel.movies.push(movies.responseJSON[i].title);
 		};
 	},
 	getDate: function() {
@@ -22,18 +22,14 @@ var Model = {
 		date = yyyy + "-" + mm + "-"+ dd;
 	},
 	getMovies: function() {
-		movies = $.ajax("http://data.tmsapi.com/v1.1/movies/showings?startDate=" +
+		movies = $.ajax("http://daBROKENTEMPORARILYta.tmsapi.com/v1.1/movies/showings?startDate=" +
 			date + "&numDays=1&lat=39.708582&lng=-105.076251%radius=1&units=mi&api_key=5p8sgppbuvrcwt9h6szyjy3u", {
 				error: function(){
 					$showtimes.append("<br>There was a problem getting a list of films.<br> Visit the theater's site for information.");
 				}
 			});
 	},
-
-
-};
-
-var masterList = [
+	masterList: [
 		{
 			title: 'Belmar Library',
 			id: 'library',
@@ -85,12 +81,14 @@ var masterList = [
 			lng: -105.080060,
 			visibility: ko.observable(true)
 		}
-	];
+	]
+};
 
+// this function gets called once the map has been loaded
 var addMarkers = function(){
 	var counter = 0;
-	for (i in masterList) {
-		var here = masterList[i];
+	for (i in Model.masterList) {
+		var here = Model.masterList[i];
 		here.marker = new google.maps.Marker({
 			position: {lat: here.lat, lng: here.lng},
 			map: map,
@@ -100,6 +98,7 @@ var addMarkers = function(){
 			content: "<h2>" + here.title + "</h2><p class='infoText'>" + here.blurb + "</p>" +
 				"<p class='infoDetails'><a href='" + here.url + "'>website</a> | " + here.address +  "</p>",
 		});
+		// IIFE for click listeners
 		(function(markerCopy, infoWindowCopy, counterCopy){
 				// click listener for marker pins
 				markerCopy.addListener('click', function(){
@@ -120,16 +119,20 @@ var addMarkers = function(){
 };
 
 var viewModel = {
-    marks: ko.observableArray(masterList),
-	showtimes: ko.observableArray([]),
+    marks: ko.observableArray(Model.masterList),
+	movies: ko.observableArray([]),
 
     filterQuery: ko.observable(''),
 
     search: function(value) {
         for(var x in masterList) {
+        	// hide list items and markers and close any open infowindows
         	masterList[x].visibility(false);
         	masterList[x].marker.setVisible(false);
         	masterList[x].infowindow.close();
+        	// if the user enters something in the search field that matches
+        	// something in either the title or blurb of one of the objects,
+        	// that object's list item and marker are added back to the map
         	if(masterList[x].title.toLowerCase().indexOf(value.toLowerCase()) >= 0 || masterList[x].blurb.toLowerCase().indexOf(value.toLowerCase()) >= 0) {
             	masterList[x].visibility(true);
             	masterList[x].marker.setVisible(true);
@@ -147,7 +150,6 @@ var View = {
 		$showtimes = $("#nowShowing");
 	}
 }
-
 
 View.init();
 Model.init();
