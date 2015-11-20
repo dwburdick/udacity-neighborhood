@@ -108,10 +108,11 @@ var viewModel = {
       filterQuery: ko.observable(''),
 
       search: function(value) {
-        viewModel.marks([]);
+        // viewModel.marks([]);
         for(var x in masterList) {
-          if(masterList[x].title.toLowerCase().indexOf(value.toLowerCase()) >= 0) {
-            viewModel.marks.push(masterList[x]);
+        	masterList[x].visibility(false);
+        	if(masterList[x].title.toLowerCase().indexOf(value.toLowerCase()) >= 0) {
+            	masterList[x].visibility(true);
           }
         }
       },
