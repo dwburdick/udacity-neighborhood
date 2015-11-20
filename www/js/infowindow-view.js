@@ -91,13 +91,15 @@ var masterList = [
 var addMarkers = function(){
 	var counter = 0;
 	for (i in masterList) {
-		masterList[i].marker = new google.maps.Marker({
-			position: {lat: masterList[i].lat, lng: masterList[i].lng},
+		var here = masterList[i];
+		here.marker = new google.maps.Marker({
+			position: {lat: here.lat, lng: here.lng},
 			map: map,
-			title: masterList[i].title
+			title: here.title
 		});
-		masterList[i].infowindow = new google.maps.InfoWindow({
-			content: i,
+		here.infowindow = new google.maps.InfoWindow({
+			content: "<h2>" + here.title + "</h2><p class='infoText'>" + here.blurb + "</p>" +
+				"<p class='infoDetails'><a href='" + here.url + "'>website</a> | " + here.address +  "</p>",
 		});
 		(function(markerCopy, infoWindowCopy, counterCopy){
 				// click listener for marker pins
@@ -113,7 +115,7 @@ var addMarkers = function(){
 					infoWindowCopy.open(map, markerCopy);
 					markerCopy.setAnimation(google.maps.Animation.BOUNCE);
 				});
-			})(masterList[i].marker, masterList[i].infowindow, counter);
+			})(here.marker, here.infowindow, counter);
 		counter++
 	}
 };
