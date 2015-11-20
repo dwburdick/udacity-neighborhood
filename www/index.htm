@@ -11,13 +11,16 @@
 	<input id="pac-input" data-bind="value: filterQuery, valueUpdate: 'keyup'" class="controls" type="text" placeholder="Search">
 	<div id="wrapper">
 		<div id="mapList">
-			<p><a href="#" id="listToggle">show / hide list</a></p>
 			<ul data-bind="foreach: marks" id="mapListItems">
 				<li data-bind="attr: {id: $index}, visible: visibility"><a href="#" data-bind="text:title"></a></li>
 			</ul>
-			</div>
+			<p><a href="#" id="listToggle">show / hide movies</a></p>
+			<ul data-bind="foreach: showtimes" id="movieList">
+				<li data-bind="text: $data"></li>
+			</ul>
 		</div>
-		<div id="map"></div>
+	</div>
+	<div id="map"></div>
 	</div>
 	<div id="nowShowing">Currently showing:<div data-bind="foreach: showtimes"><span data-bind="text: $data"></span>, </div>
 	<script type="text/javascript">

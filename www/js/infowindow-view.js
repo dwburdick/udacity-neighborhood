@@ -4,14 +4,14 @@ var Model = {
 		Model.getMovies();
 		$(document).ready(function(){
 			$("#listToggle").click(function(){
-				$("#mapListItems").toggle();
+				$("#movieList").toggle();
 			});
-			window.setTimeout(Model.loadMovies, 500);
+			window.setTimeout(Model.loadMovies, 900);
 		});
 	},
 	loadMovies: function(){
 		for (i in movies.responseJSON) {
-		showtimes.push(movies.responseJSON[i].title);
+		viewModel.showtimes.push(movies.responseJSON[i].title);
 		};
 	},
 	getDate: function() {
@@ -22,13 +22,12 @@ var Model = {
 		date = yyyy + "-" + mm + "-"+ dd;
 	},
 	getMovies: function() {
-		movies = $.ajax("http://daBROKETHISTEMPORARILYta.tmsapi.com/v1.1/movies/showings?startDate=" +
+		movies = $.ajax("http://data.tmsapi.com/v1.1/movies/showings?startDate=" +
 			date + "&numDays=1&lat=39.708582&lng=-105.076251%radius=1&units=mi&api_key=5p8sgppbuvrcwt9h6szyjy3u", {
 				error: function(){
 					$showtimes.append("<br>There was a problem getting a list of films.<br> Visit the theater's site for information.");
 				}
 			});
-		showtimes = ko.observableArray([]);
 	},
 
 
@@ -121,11 +120,12 @@ var addMarkers = function(){
 };
 
 var viewModel = {
-      marks: ko.observableArray(masterList),
+    marks: ko.observableArray(masterList),
+	showtimes: ko.observableArray([]),
 
-      filterQuery: ko.observable(''),
+    filterQuery: ko.observable(''),
 
-      search: function(value) {
+    search: function(value) {
         for(var x in masterList) {
         	masterList[x].visibility(false);
         	masterList[x].marker.setVisible(false);
@@ -133,9 +133,9 @@ var viewModel = {
         	if(masterList[x].title.toLowerCase().indexOf(value.toLowerCase()) >= 0 || masterList[x].blurb.toLowerCase().indexOf(value.toLowerCase()) >= 0) {
             	masterList[x].visibility(true);
             	masterList[x].marker.setVisible(true);
-          }
+        	}
         }
-      },
+    },
 
     };
 viewModel.filterQuery.subscribe(viewModel.search);
@@ -151,5 +151,3 @@ var View = {
 
 View.init();
 Model.init();
-ViewModel.init();
-
