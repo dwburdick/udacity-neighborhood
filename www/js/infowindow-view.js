@@ -52,9 +52,7 @@ function initMap() {
 	    scaledSize: new google.maps.Size(25, 25)
 	  };
 
-	  // TODO: add a button that does this: viewModel.marks.push(newMarkers[0])
-	  // and adds event listener to list item at same time AND changes the icon
-	  // to the map default
+	  // TODO: add a button that uses viewModel.pushMarker(index) to save item to map and list
 
 	  var newMarker = {
 	  	title: place.name,
@@ -62,7 +60,7 @@ function initMap() {
 	  	lng: place.geometry.location.lng(),
 	  	address: place.formatted_address,
 	  	icon: icon,
-	  	visibility: true,
+	  	visibility: ko.observable(true),
 	  };
 
 	  newMarkers.push(newMarker);
@@ -189,7 +187,18 @@ var addMarkers = function(list){
 		if (here.url) {
 			here.infowindow.content = here.infowindow.content + "<p class='infoWebsite'><a href='" + here.url + "'>website</a></p>";
 		}
-		// IIFE for click listeners
+		viewModel.addListeners(here.marker, here.infowindow, counter);
+		counter++;
+	}
+};
+
+var viewModel = {
+    marks: ko.observableArray(Model.masterList),
+	movies: ko.observableArray([]),
+
+    filterQuery: ko.observable(''),
+    addListeners: function(marker, infowindow, counter) {
+    			// IIFE for click listeners
 		(function(markerCopy, infoWindowCopy, counterCopy){
 				// click listener for marker pins
 				markerCopy.addListener('click', function(){
@@ -204,17 +213,8 @@ var addMarkers = function(list){
 					infoWindowCopy.open(map, markerCopy);
 					markerCopy.setAnimation(google.maps.Animation.BOUNCE);
 				});
-			})(here.marker, here.infowindow, counter);
-		counter++;
-	}
-};
-
-var viewModel = {
-    marks: ko.observableArray(Model.masterList),
-	movies: ko.observableArray([]),
-
-    filterQuery: ko.observable(''),
-
+			})(marker, infowindow, counter);
+		},
     search: function(value) {
         for(var x in Model.masterList) {
         	// hide list items and markers and close any open infowindows
@@ -237,22 +237,7 @@ var viewModel = {
     	var here = newMarkers[markerIndex];
     	here.marker.setIcon("https://maps.gstatic.com/mapfiles/ms2/micons/red-pushpin.png");
     	viewModel.marks.push(here);
-		// IIFE for click listeners
-		(function(markerCopy, infoWindowCopy, counterCopy){
-				// click listener for marker pins
-				markerCopy.addListener('click', function(){
-					infoWindowCopy.open(map, markerCopy);
-					markerCopy.setAnimation(google.maps.Animation.BOUNCE);
-				});
-				infoWindowCopy.addListener('closeclick', function(){
-					markerCopy.setAnimation(null);
-				})
-				// click listener for list of places
-				$("#" + counterCopy).click(function(){
-					infoWindowCopy.open(map, markerCopy);
-					markerCopy.setAnimation(google.maps.Animation.BOUNCE);
-				});
-			})(here.marker, here.infowindow, counter);
+		viewModel.addListeners(here.marker, here.infowindow, counter);
 		counter++
     }
 
