@@ -38,6 +38,9 @@ function initMap() {
 
 	// For each place, get the icon, name and location.
 	var bounds = new google.maps.LatLngBounds();
+
+	var newMarkers = [];
+
 	places.forEach(function(place) {
 	  var icon = {
 	    url: place.icon,
@@ -52,19 +55,10 @@ function initMap() {
 	  	lat: place.geometry.location.lat(),
 	  	lng: place.geometry.location.lng(),
 	  	address: place.formatted_address,
-
+	  	icon: icon,
 	  };
 
-	  console.log(place);
-	  console.log(place.geometry.location.lat());
-
-	  // Create a marker for each place.
-	  markers.push(new google.maps.Marker({
-	    map: map,
-	    icon: icon,
-	    title: place.name,
-	    position: place.geometry.location
-	  }));
+	  newMarkers.push(newMarker);
 
 	  if (place.geometry.viewport) {
 	    // Only geocodes have viewport.
@@ -73,6 +67,7 @@ function initMap() {
 	    bounds.extend(place.geometry.location);
 	  }
 	});
+	addMarkers(newMarkers);
 	map.fitBounds(bounds);
 	});
 	// [END region_getplaces]
@@ -170,10 +165,14 @@ var addMarkers = function(list){
 	var counter = 0;
 	for (i in list) {
 		var here = list[i];
+		if (!here.blurb) {
+			here.blurb = ""
+		};
 		here.marker = new google.maps.Marker({
 			position: {lat: here.lat, lng: here.lng},
 			map: map,
-			title: here.title
+			title: here.title,
+			icon: here.icon
 		});
 		here.infowindow = new google.maps.InfoWindow({
 			content: "<h2>" + here.title + "</h2><p class='infoText'>" + here.blurb + "</p>" +
