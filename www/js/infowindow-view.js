@@ -1,6 +1,3 @@
-var counter = 0;
-
-
 $(function () {
 	$("#map").css("height", $(window).height());
 });
@@ -35,47 +32,45 @@ function initMap() {
 
 	// Clear out the old markers.
 
-	if (typeof newMarkers != "undefined") {
-		for (i in newMarkers) {
-			newMarkers[i].marker.setMap(null);
+	if (typeof Model.newMarkers != "undefined") {
+		for (i in Model.newMarkers) {
+			Model.newMarkers[i].marker.setMap(null);
 		}
 	};
-
-	newMarkers = [];
 
 	// For each place, get the icon, name and location.
 	var bounds = new google.maps.LatLngBounds();
 
 	places.forEach(function(place) {
-	  var icon = {
-	    url: place.icon,
-	    size: new google.maps.Size(71, 71),
-	    origin: new google.maps.Point(0, 0),
-	    anchor: new google.maps.Point(17, 34),
-	    scaledSize: new google.maps.Size(25, 25)
-	  };
+		var icon = {
+			url: place.icon,
+			size: new google.maps.Size(71, 71),
+			origin: new google.maps.Point(0, 0),
+			anchor: new google.maps.Point(17, 34),
+			scaledSize: new google.maps.Size(25, 25)
+		};
 
 	  // TODO: add a button that uses viewModel.pushMarker(index) to save item to map and list
+		var newMarker = {
+			title: place.name,
+			lat: place.geometry.location.lat(),
+			lng: place.geometry.location.lng(),
+			address: place.formatted_address,
+			icon: icon,
+			visibility: ko.observable(true),
+			markerIndex: counter
+		};
 
-	  var newMarker = {
-	  	title: place.name,
-	  	lat: place.geometry.location.lat(),
-	  	lng: place.geometry.location.lng(),
-	  	address: place.formatted_address,
-	  	icon: icon,
-	  	visibility: ko.observable(true),
-	  };
+		Model.newMarkers.push(newMarker);
 
-	  newMarkers.push(newMarker);
-
-	  if (place.geometry.viewport) {
-	    // Only geocodes have viewport.
-	    bounds.union(place.geometry.viewport);
-	  } else {
-	    bounds.extend(place.geometry.location);
-	  }
+		if (place.geometry.viewport) {
+			// Only geocodes have viewport.
+			bounds.union(place.geometry.viewport);
+		} else {
+			bounds.extend(place.geometry.location);
+		}
 	});
-	addMarkers(newMarkers);
+	addMarkers(Model.newMarkers);
 	map.fitBounds(bounds);
 	});
 	// [END region_getplaces]
@@ -170,9 +165,27 @@ var Model = {
 			lng: -105.080060,
 			visibility: ko.observable(true)
 		}
-	]
+	],
+	newMarkers: [],
+	indexFinder: function(list, markerIndex) {
+		for (var i = 0, len = list.length; i < len; i++) {
+			if (list[i].markerIndex == markerIndex) return i;
+		}
+	},
+	deleteItem: function(list, markerIndex) {
+		var deleteIndex = Model.indexFinder(list, markerIndex);
+		list()[markerIndex].marker.setMap(null);
+		list.splice(deleteIndex, 1);
+	},
+	pushItem: function(markerIndex) {
+		var here = Model.newMarkers[markerIndex];
+		here.marker.setIcon("https://maps.gstatic.com/mapfiles/ms2/micons/red-pushpin.png");
+		viewModel.marks.push(here);
+		viewModel.addListeners(here.marker, here.infowindow, here.markerIndex);
+	}
 };
 
+var counter = Model.masterList.length;
 // this function gets called once the map has been loaded
 var addMarkers = function(list){
 	for (i in list) {
@@ -193,13 +206,14 @@ var addMarkers = function(list){
 		if (here.url) {
 			here.infowindow.content = here.infowindow.content + "<p class='infoWebsite'><a href='" + here.url + "'>website</a></p>";
 		}
-		viewModel.addListeners(here.marker, here.infowindow, counter);
+		viewModel.addListeners(here.marker, here.infowindow, here.markerIndex);
 		counter++;
 	}
 };
 
 var viewModel = {
     marks: ko.observableArray(Model.masterList),
+    addedMarks: ko.observableArray(Model.newMarkers),
 	movies: ko.observableArray([]),
 
     filterQuery: ko.observable(''),
@@ -237,13 +251,6 @@ var viewModel = {
         	}
         }
     },
-
-    pushMarker: function(markerIndex) {
-    	var here = newMarkers[markerIndex];
-    	here.marker.setIcon("https://maps.gstatic.com/mapfiles/ms2/micons/red-pushpin.png");
-    	viewModel.marks.push(here);
-		viewModel.addListeners(here.marker, here.infowindow, here.markerIndex);
-    }
 
     };
 viewModel.filterQuery.subscribe(viewModel.search);
