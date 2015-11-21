@@ -12,7 +12,7 @@
 	<div id="wrapper">
 		<div id="mapList">
 			<ul data-bind="foreach: marks" id="mapListItems">
-				<li data-bind="attr: {id: $index}, visible: visibility"><a href="#" data-bind="text:title"></a></li>
+				<li data-bind="attr: {id: markerIndex}, visible: visibility"><a href="#" data-bind="text:title"></a></li>
 			</ul>
 			<p><a href="#" id="listToggle">show / hide movies</a></p>
 			<ul data-bind="foreach: showtimes" id="movieList">
@@ -22,7 +22,7 @@
 	</div>
 	<div id="map"></div>
 	</div>
-    <script src="js/infowindow-view.js"></script>
+	<script src="js/infowindow-view.js"></script>
     <script async defer
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-dxArQFJ52v-62lleBgjBa3JxjUYuwM0&libraries=places&callback=initMap">
     </script>

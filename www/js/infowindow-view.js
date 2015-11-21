@@ -1,3 +1,6 @@
+var counter = 0;
+
+
 $(function () {
 	$("#map").css("height", $(window).height());
 });
@@ -91,6 +94,11 @@ var Model = {
 			window.setTimeout(Model.loadMoviesArray, 900);
 		});
 	},
+	loadMarkerCount: function(){
+		for (item in Model.masterList) {
+			Model.masterList[item].markerIndex = item;
+		}
+	},
 	loadMoviesArray: function(){
 		for (i in movies.responseJSON) {
 		viewModel.movies.push(movies.responseJSON[i].title);
@@ -165,8 +173,6 @@ var Model = {
 	]
 };
 
-var counter = 0;
-
 // this function gets called once the map has been loaded
 var addMarkers = function(list){
 	for (i in list) {
@@ -197,9 +203,9 @@ var viewModel = {
 	movies: ko.observableArray([]),
 
     filterQuery: ko.observable(''),
-    addListeners: function(marker, infowindow, counter) {
+    addListeners: function(marker, infowindow, index) {
     			// IIFE for click listeners
-		(function(markerCopy, infoWindowCopy, counterCopy){
+		(function(markerCopy, infoWindowCopy, indexCopy){
 				// click listener for marker pins
 				markerCopy.addListener('click', function(){
 					infoWindowCopy.open(map, markerCopy);
@@ -209,11 +215,11 @@ var viewModel = {
 					markerCopy.setAnimation(null);
 				})
 				// click listener for list of places
-				$("#" + counterCopy).click(function(){
+				$("#" + indexCopy).click(function(){
 					infoWindowCopy.open(map, markerCopy);
 					markerCopy.setAnimation(google.maps.Animation.BOUNCE);
 				});
-			})(marker, infowindow, counter);
+			})(marker, infowindow, index);
 		},
     search: function(value) {
         for(var x in Model.masterList) {
@@ -233,17 +239,16 @@ var viewModel = {
     },
 
     pushMarker: function(markerIndex) {
-    	counter = Model.masterList.length;
     	var here = newMarkers[markerIndex];
     	here.marker.setIcon("https://maps.gstatic.com/mapfiles/ms2/micons/red-pushpin.png");
     	viewModel.marks.push(here);
-		viewModel.addListeners(here.marker, here.infowindow, counter);
-		counter++
+		viewModel.addListeners(here.marker, here.infowindow, here.markerIndex);
     }
 
     };
 viewModel.filterQuery.subscribe(viewModel.search);
 
+Model.loadMarkerCount();
 ko.applyBindings(viewModel);
 
 var View = {
