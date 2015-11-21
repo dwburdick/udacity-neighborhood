@@ -139,7 +139,6 @@ var Model = {
 			blurb: 'Located in the sprawling Belmar shopping center.',
 			lat: 39.708582,
 			lng: -105.076251,
-			showtimes: true,
 			visibility: ko.observable(true)
 		},
 		{
@@ -196,17 +195,18 @@ var viewModel = {
     filterQuery: ko.observable(''),
 
     search: function(value) {
-        for(var x in masterList) {
+        for(var x in Model.masterList) {
         	// hide list items and markers and close any open infowindows
-        	masterList[x].visibility(false);
-        	masterList[x].marker.setVisible(false);
-        	masterList[x].infowindow.close();
+        	var here = Model.masterList[x];
+        	here.visibility(false);
+        	here.marker.setVisible(false);
+        	here.infowindow.close();
         	// if the user enters something in the search field that matches
         	// something in either the title or blurb of one of the objects,
         	// that object's list item and marker are added back to the map
-        	if(masterList[x].title.toLowerCase().indexOf(value.toLowerCase()) >= 0 || masterList[x].blurb.toLowerCase().indexOf(value.toLowerCase()) >= 0) {
-            	masterList[x].visibility(true);
-            	masterList[x].marker.setVisible(true);
+        	if(here.title.toLowerCase().indexOf(value.toLowerCase()) >= 0 || here.blurb.toLowerCase().indexOf(value.toLowerCase()) >= 0) {
+            	here.visibility(true);
+            	here.marker.setVisible(true);
         	}
         }
     },
