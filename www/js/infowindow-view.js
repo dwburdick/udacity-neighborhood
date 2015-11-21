@@ -53,7 +53,8 @@ function initMap() {
 	  };
 
 	  // TODO: add a button that does this: viewModel.marks.push(newMarkers[0])
-	  // and adds event listener to list item at same time
+	  // and adds event listener to list item at same time AND changes the icon
+	  // to the map default
 
 	  var newMarker = {
 	  	title: place.name,
@@ -166,9 +167,10 @@ var Model = {
 	]
 };
 
+var counter = 0;
+
 // this function gets called once the map has been loaded
 var addMarkers = function(list){
-	var counter = 0;
 	for (i in list) {
 		var here = list[i];
 		if (!here.blurb) {
@@ -203,7 +205,7 @@ var addMarkers = function(list){
 					markerCopy.setAnimation(google.maps.Animation.BOUNCE);
 				});
 			})(here.marker, here.infowindow, counter);
-		counter++
+		counter++;
 	}
 };
 
@@ -229,6 +231,30 @@ var viewModel = {
         	}
         }
     },
+
+    pushMarker: function(markerIndex) {
+    	counter = Model.masterList.length;
+    	var here = newMarkers[markerIndex];
+    	here.marker.setIcon("https://maps.gstatic.com/mapfiles/ms2/micons/red-pushpin.png");
+    	viewModel.marks.push(here);
+		// IIFE for click listeners
+		(function(markerCopy, infoWindowCopy, counterCopy){
+				// click listener for marker pins
+				markerCopy.addListener('click', function(){
+					infoWindowCopy.open(map, markerCopy);
+					markerCopy.setAnimation(google.maps.Animation.BOUNCE);
+				});
+				infoWindowCopy.addListener('closeclick', function(){
+					markerCopy.setAnimation(null);
+				})
+				// click listener for list of places
+				$("#" + counterCopy).click(function(){
+					infoWindowCopy.open(map, markerCopy);
+					markerCopy.setAnimation(google.maps.Animation.BOUNCE);
+				});
+			})(here.marker, here.infowindow, counter);
+		counter++
+    }
 
     };
 viewModel.filterQuery.subscribe(viewModel.search);
