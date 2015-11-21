@@ -47,6 +47,17 @@ function initMap() {
 	    scaledSize: new google.maps.Size(25, 25)
 	  };
 
+	  var newMarker = {
+	  	title: place.name,
+	  	lat: place.geometry.location.lat(),
+	  	lng: place.geometry.location.lng(),
+	  	address: place.formatted_address,
+
+	  };
+
+	  console.log(place);
+	  console.log(place.geometry.location.lat());
+
 	  // Create a marker for each place.
 	  markers.push(new google.maps.Marker({
 	    map: map,
@@ -166,8 +177,11 @@ var addMarkers = function(list){
 		});
 		here.infowindow = new google.maps.InfoWindow({
 			content: "<h2>" + here.title + "</h2><p class='infoText'>" + here.blurb + "</p>" +
-				"<p class='infoDetails'><a href='" + here.url + "'>website</a> | " + here.address +  "</p>",
+				"<p class='infoDetails'>" + here.address + "</p>",
 		});
+		if (here.url) {
+			here.infowindow.content = here.infowindow.content + "<p class='infoWebsite'><a href='" + here.url + "'>website</a></p>";
+		}
 		// IIFE for click listeners
 		(function(markerCopy, infoWindowCopy, counterCopy){
 				// click listener for marker pins
