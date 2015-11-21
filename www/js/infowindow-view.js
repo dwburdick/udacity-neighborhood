@@ -52,12 +52,16 @@ function initMap() {
 	    scaledSize: new google.maps.Size(25, 25)
 	  };
 
+	  // TODO: add a button that does this: viewModel.marks.push(newMarkers[0])
+	  // and adds event listener to list item at same time
+
 	  var newMarker = {
 	  	title: place.name,
 	  	lat: place.geometry.location.lat(),
 	  	lng: place.geometry.location.lng(),
 	  	address: place.formatted_address,
 	  	icon: icon,
+	  	visibility: true,
 	  };
 
 	  newMarkers.push(newMarker);
