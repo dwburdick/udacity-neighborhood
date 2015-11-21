@@ -66,7 +66,7 @@ function initMap() {
 	});
 	// [END region_getplaces]
 
-	addMarkers();
+	addMarkers(Model.masterList);
 };
 
 var Model = {
@@ -155,10 +155,10 @@ var Model = {
 };
 
 // this function gets called once the map has been loaded
-var addMarkers = function(){
+var addMarkers = function(list){
 	var counter = 0;
-	for (i in Model.masterList) {
-		var here = Model.masterList[i];
+	for (i in list) {
+		var here = list[i];
 		here.marker = new google.maps.Marker({
 			position: {lat: here.lat, lng: here.lng},
 			map: map,
