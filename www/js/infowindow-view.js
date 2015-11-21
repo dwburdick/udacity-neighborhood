@@ -31,15 +31,17 @@ function initMap() {
 	}
 
 	// Clear out the old markers.
-	markers.forEach(function(marker) {
-	  marker.setMap(null);
-	});
-	markers = [];
+
+	if (typeof newMarkers != "undefined") {
+		for (i in newMarkers) {
+			newMarkers[i].marker.setMap(null);
+		}
+	};
+
+	newMarkers = [];
 
 	// For each place, get the icon, name and location.
 	var bounds = new google.maps.LatLngBounds();
-
-	var newMarkers = [];
 
 	places.forEach(function(place) {
 	  var icon = {
