@@ -217,7 +217,8 @@ var addMarkers = function(list){
 		// build the default infoWindows
 		here.infowindow = new google.maps.InfoWindow({
 			content: "<h2>" + here.title + "</h2><p class='infoText'>" + here.blurb + "</p>" +
-				"<p class='infoDetails'>" + here.address + "</p>" + ifAdd
+				"<p class='infoDetails'>" + here.address + "</p><p><a href='#'" + 
+				" onClick='Model.deleteItem(viewModel.marks," + here.markerIndex + ")'>delete</a></p>" + ifAdd
 		});
 		if (here.url) {
 			here.infowindow.content = here.infowindow.content + "<p class='infoWebsite'><a href='" + here.url + "'>website</a></p>";
