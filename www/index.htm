@@ -25,7 +25,7 @@
 					<a class="navbar-brand" href="#">Belmar map</a>
 				</div>
 				<div id="navbar" class="navbar-collapse collapse">
-					<ul class="nav navbar-nav">
+					<ul class="nav navbar-nav" id="drops">
 						<li class="active"><a href="#">Home</a></li>
 						<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Places <span class="caret"></span></a>
@@ -35,8 +35,11 @@
 						</li>
 						<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Now Showing <span class="caret"></span></a>
-							<ul data-bind="foreach: showtimes" id="movieList" class="dropdown-menu" id="nowShowing">
-								<li data-bind="text: $data"></li>
+							<ul id="movieListItems" class="dropdown-menu">
+								<li>At Century 16 Bel Mar:</li>
+								<!-- ko foreach: movies -->
+								<li data-bind="text:$data" class="movieTitle"></li>
+								<!-- /ko -->
 							</ul>
 						</li>
 					</ul>

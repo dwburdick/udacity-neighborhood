@@ -82,9 +82,6 @@ var Model = {
 		Model.getDate();
 		Model.getMovies();
 		$(document).ready(function(){
-			$("#listToggle").click(function(){
-				$("#movieList").toggle();
-			});
 			window.setTimeout(Model.loadMoviesArray, 900);
 		});
 	},
@@ -109,7 +106,7 @@ var Model = {
 		movies = $.ajax("http://data.tmsapi.com/v1.1/movies/showings?startDate=" +
 			date + "&numDays=1&lat=39.708582&lng=-105.076251%radius=1&units=mi&api_key=5p8sgppbuvrcwt9h6szyjy3u", {
 				error: function(){
-					$showtimes.append("<li>There was a problem getting a list of films.<br> Visit the theater's site for information.</li>");
+					$("#movieListItems").append('<li>There was a problem<br> loading the film list.</li>')
 				}
 			});
 	},
@@ -272,8 +269,8 @@ var viewModel = {
     },
 
     };
-viewModel.filterQuery.subscribe(viewModel.search);
 
+viewModel.filterQuery.subscribe(viewModel.search);
 Model.loadMarkerCount();
 ko.applyBindings(viewModel);
 
