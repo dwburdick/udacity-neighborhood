@@ -184,7 +184,6 @@ var Model = {
 			}
 		};
 		var foundIndex = findIndex(markerIndex);
-		console.log(foundIndex);
 		var here = list()[foundIndex];
 		here.title = window.prompt("Please enter a title for this entry", here.title);
 		here.marker.setIcon("https://maps.gstatic.com/mapfiles/ms2/micons/red-pushpin.png");
@@ -291,15 +290,6 @@ var View = {
 			markerCopy.setAnimation(google.maps.Animation.BOUNCE);
 		});
 	},
-	saveInit: function(titleCopy, latCopy, lngCopy, saveCount){
-		console.log("saveInit() called");
-		console.log(titleCopy + ' ' + latCopy + ', ' + lngCopy);
-		saveIndex = "#save" + saveCount;
-		($(saveIndex).click(function(){
-			console.log(titleCopy + ' ' + latCopy + ', ' + lngCopy);
-			ViewModel.addMarker(titleCopy, latCopy, lngCopy);
-		}));
-	}
 }
 
 View.init();
