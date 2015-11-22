@@ -12,7 +12,6 @@ function initMap() {
 	// Create the search box and link it to the UI element.
 	var input = document.getElementById('pac-input');
 	var searchBox = new google.maps.places.SearchBox(input);
-	map.controls[google.maps.ControlPosition.LEFT_TOP].push(input);
 
 	// Bias the SearchBox results towards current map's viewport.
 	map.addListener('bounds_changed', function() {
@@ -107,10 +106,10 @@ var Model = {
 		date = yyyy + "-" + mm + "-"+ dd;
 	},
 	getMovies: function() {
-		movies = $.ajax("http://daBROKENTEMPORARILYta.tmsapi.com/v1.1/movies/showings?startDate=" +
+		movies = $.ajax("http://data.tmsapi.com/v1.1/movies/showings?startDate=" +
 			date + "&numDays=1&lat=39.708582&lng=-105.076251%radius=1&units=mi&api_key=5p8sgppbuvrcwt9h6szyjy3u", {
 				error: function(){
-					$showtimes.append("<br>There was a problem getting a list of films.<br> Visit the theater's site for information.");
+					$showtimes.append("<li>There was a problem getting a list of films.<br> Visit the theater's site for information.</li>");
 				}
 			});
 	},

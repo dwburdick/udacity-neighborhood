@@ -7,15 +7,13 @@ body {
 
 #wrapper {
 	position: relative;
+	width: 100%;
 }
 
-#mapList {
+#mapNav {
 	position: absolute;
-	background-color: white;
-	top: 30px;
-	right: 20px;
-	padding-right: 10px;
 	z-index: 99;
+	width: 100%;
 }
 
 #movieList {
@@ -27,5 +25,4 @@ body {
 }
 
 #pac-input {
-	float: right;
 }
