@@ -18,6 +18,10 @@ body {
 	z-index: 99;
 }
 
+#movieList {
+	display: none;
+}
+
 #map {
 	height: 400px;
 }

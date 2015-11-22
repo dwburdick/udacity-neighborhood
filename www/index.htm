@@ -9,133 +9,23 @@
 	<title>Belmar</title>
 </head>
 <body>
-	<input id="pac-input" class="controls" type="text" placeholder="Search Box">
+	<input id="pac-input" data-bind="value: filterQuery, valueUpdate: 'keyup'" class="controls" type="text" placeholder="Search">
 	<div id="wrapper">
 		<div id="mapList">
-			<p><a href="#" id="listToggle">show / hide list</a></p>
-			<ul data-bind="foreach: {data: ViewModel.markers, afterAdd: ViewModel.markerUpdate}" id="mapListItems"><li data-bind="attr: {id: $index}"><a href="#" data-bind="text:title"></a></li></ul>
-			</div>
+			<ul data-bind="foreach: marks" id="mapListItems">
+				<li data-bind="visible: visibility"><a href="#" data-bind="attr: {id: markerIndex}, text:title"></a> | <a href="#" class="delete" data-bind="attr: {onClick: 'Model.deleteItem(viewModel.marks, ' + markerIndex + ')'}">X</a></li>
+			</ul>
+			<p><a href="#" id="listToggle">show / hide movies</a></p>
+			<ul data-bind="foreach: showtimes" id="movieList">
+				<li data-bind="text: $data"></li>
+			</ul>
 		</div>
-		<!-- TODO: Create a text input for user-generated list items, bypassing search -->
-		<div id="map"></div>
 	</div>
-	<div id="nowShowing">Currently showing:<div data-bind="foreach: showtimes"><span data-bind="text: $data"></span>, </div>
-	<script type="text/javascript">
-
-	$(function () {
-       	$("#map").css("height", $(window).height());
-  	});
-
-	var map;
-
-	function initMap() {
-
-		map = new google.maps.Map(document.getElementById('map'), {
-			center: {lat: 39.706901, lng: -105.084055},
-			zoom: 15
-		});
-
-		// Create the search box and link it to the UI element.
-		var input = document.getElementById('pac-input');
-		var searchBox = new google.maps.places.SearchBox(input);
-		map.controls[google.maps.ControlPosition.LEFT_TOP].push(input);
-
-		// Bias the SearchBox results towards current map's viewport.
-		map.addListener('bounds_changed', function() {
-		searchBox.setBounds(map.getBounds());
-		});
-
-		var markers = [];
-		// [START region_getplaces]
-		// Listen for the event fired when the user selects a prediction and retrieve
-		// more details for that place.
-		searchBox.addListener('places_changed', function() {
-		var places = searchBox.getPlaces();
-
-		if (places.length == 0) {
-		  return;
-		}
-
-		// Clear out the old markers.
-		markers.forEach(function(marker) {
-		  marker.setMap(null);
-		});
-		markers = [];
-		ViewModel.unloadSearch();
-		// For each place, get the icon, name and location.
-		var bounds = new google.maps.LatLngBounds();
-		newCounter = 0;
-		places.forEach(function(place) {
-			var icon = {
-			url: place.icon,
-			size: new google.maps.Size(71, 71),
-			origin: new google.maps.Point(0, 0),
-			anchor: new google.maps.Point(17, 34),
-			scaledSize: new google.maps.Size(25, 25)
-			};
-			// Create a marker for each place.
-			var marker = new google.maps.Marker({
-			map: map,
-			icon: icon,
-			title: place.name,
-			position: place.geometry.location
-			});
-			markers.push(marker);
-			if (place.geometry.viewport) {
-			// Only geocodes have viewport.
-			bounds.union(place.geometry.viewport);
-			} else {
-			bounds.extend(place.geometry.location);
-			}
-			// Add each place to KO observable array, create infowindows and click listeners.
-			// TODO: give each new searched object an index number so the save button can push the correct object into the listed array
-			ViewModel.loadSearch(place, marker, infowindow, newCounter);
-			newCounter++;
-		});
-		map.fitBounds(bounds);
-		});
-		// [END region_getplaces]
-
-		counter = 0;
-
-		for (i in ViewModel.markers()) {
-			var infoTitle = ViewModel.markers()[i].title;
-			var url = ViewModel.markers()[i].url;
-			var blurb = ViewModel.markers()[i].blurb;
-			var address = ViewModel.markers()[i].address;
-			var infoLat = ViewModel.markers()[i].lat;
-			var infoLng = ViewModel.markers()[i].lng;
-			var contentString = '<div class="infoWindow">'+
-				'<h1><a href="' + url + '">' + infoTitle + '</a></h1>' +
-				'<div class="infoWindowContent"><p>' + blurb + '</p></div>' +
-				'<p class="infoAddress">' + address + '</p></div>';
-
-			if (!ViewModel.markers()[i].showtimes) {
-				var infowindow = new google.maps.InfoWindow({
-					content: contentString
-				});
-			} else {
-				// this fires if ViewModel.markers()[i].showtimes == true
-				$showtimes.prepend(contentString);
-				var infowindow = new google.maps.InfoWindow({
-					content: $showtimes[0]
-				});
-			};
-			var marker = new google.maps.Marker({
-				position: {lat: infoLat, lng: infoLng},
-				map: map,
-				title: infoTitle,
-			});
-			View.addListeners(marker, infowindow, counter);
-			counter++;
-		};
-
-	};
-
-    </script>
+	<div id="map"></div>
+	</div>
+	<script src="js/infowindow-view.js"></script>
     <script async defer
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-dxArQFJ52v-62lleBgjBa3JxjUYuwM0&libraries=places&callback=initMap">
     </script>
-    <script src="js/infowindow-view.js"></script>
 </body>
 </html>

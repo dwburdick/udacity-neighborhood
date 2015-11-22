@@ -1,17 +1,102 @@
+$(function () {
+	$("#map").css("height", $(window).height());
+});
+
+function initMap() {
+
+	map = new google.maps.Map(document.getElementById('map'), {
+		center: {lat: 39.706901, lng: -105.084055},
+		zoom: 15
+	});
+
+	// Create the search box and link it to the UI element.
+	var input = document.getElementById('pac-input');
+	var searchBox = new google.maps.places.SearchBox(input);
+	map.controls[google.maps.ControlPosition.LEFT_TOP].push(input);
+
+	// Bias the SearchBox results towards current map's viewport.
+	map.addListener('bounds_changed', function() {
+	searchBox.setBounds(map.getBounds());
+	});
+
+	var markers = [];
+	// [START region_getplaces]
+	// Listen for the event fired when the user selects a prediction and retrieve
+	// more details for that place.
+	searchBox.addListener('places_changed', function() {
+	var places = searchBox.getPlaces();
+
+	if (places.length == 0) {
+	  return;
+	}
+
+	// Clear out the old markers.
+
+	if (typeof Model.newMarkers != "undefined") {
+		for (i in Model.newMarkers) {
+			Model.newMarkers[i].marker.setMap(null);
+		}
+	};
+
+	// For each place, get the icon, name and location.
+	var bounds = new google.maps.LatLngBounds();
+
+	places.forEach(function(place) {
+		var icon = {
+			url: place.icon,
+			size: new google.maps.Size(71, 71),
+			origin: new google.maps.Point(0, 0),
+			anchor: new google.maps.Point(17, 34),
+			scaledSize: new google.maps.Size(25, 25)
+		};
+
+	  // TODO: add a button that uses viewModel.pushMarker(index) to save item to map and list
+		var newMarker = {
+			title: place.name,
+			lat: place.geometry.location.lat(),
+			lng: place.geometry.location.lng(),
+			address: place.formatted_address,
+			icon: icon,
+			visibility: ko.observable(true),
+			markerIndex: counter
+		};
+
+		Model.newMarkers.push(newMarker);
+
+		if (place.geometry.viewport) {
+			// Only geocodes have viewport.
+			bounds.union(place.geometry.viewport);
+		} else {
+			bounds.extend(place.geometry.location);
+		}
+	});
+	addMarkers(Model.newMarkers);
+	map.fitBounds(bounds);
+	});
+	// [END region_getplaces]
+
+	addMarkers(Model.masterList);
+};
+
 var Model = {
 	init: function() {
 		Model.getDate();
 		Model.getMovies();
 		$(document).ready(function(){
 			$("#listToggle").click(function(){
-				$("#mapListItems").toggle();
+				$("#movieList").toggle();
 			});
-			window.setTimeout(Model.loadMovies, 500);
+			window.setTimeout(Model.loadMoviesArray, 900);
 		});
 	},
-	loadMovies: function(){
+	loadMarkerCount: function(){
+		for (item in Model.masterList) {
+			Model.masterList[item].markerIndex = item;
+		}
+	},
+	loadMoviesArray: function(){
 		for (i in movies.responseJSON) {
-		showtimes.push(movies.responseJSON[i].title);
+		viewModel.movies.push(movies.responseJSON[i].title);
 		};
 	},
 	getDate: function() {
@@ -22,43 +107,14 @@ var Model = {
 		date = yyyy + "-" + mm + "-"+ dd;
 	},
 	getMovies: function() {
-		movies = $.ajax("http://daBROKETHISTEMPORARILYta.tmsapi.com/v1.1/movies/showings?startDate=" +
+		movies = $.ajax("http://daBROKENTEMPORARILYta.tmsapi.com/v1.1/movies/showings?startDate=" +
 			date + "&numDays=1&lat=39.708582&lng=-105.076251%radius=1&units=mi&api_key=5p8sgppbuvrcwt9h6szyjy3u", {
 				error: function(){
 					$showtimes.append("<br>There was a problem getting a list of films.<br> Visit the theater's site for information.");
 				}
 			});
-		showtimes = ko.observableArray([]);
 	},
-};
-
-var ViewModel = {
-	init: function() {
-		Model.init();
-		View.init();
-		ViewModel.markers();
-		ko.applyBindings(ViewModel);
-	},
-	markerUpdate: function() {
-		console.log("Updated!");
-		var markerIndex = ViewModel.markers().length;
-		var newMarker = ViewModel.markers()[markerIndex - 1];
-		var marker = new google.maps.Marker({
-			position: {lat: newMarker.lat, lng: newMarker.lng},
-			map: map,
-			title: newMarker.title,
-		});
-		var contentString = '<div class="infoWindow">'+
-			'<h1>' + newMarker.title + '</h1>' +
-			'<div class="infoWindowContent"><p>User-added item</p></div>' +
-			'<p class="infoAddress">Address goes here</p></div>';
-		var infowindow = new google.maps.InfoWindow({
-			content: contentString
-		});
-		View.addListeners(marker, infowindow, counter);
-		counter++;
-	},
-	markers: ko.observableArray([
+	masterList: [
 		{
 			title: 'Belmar Library',
 			id: 'library',
@@ -66,17 +122,18 @@ var ViewModel = {
 			address: '555 S. Allison Pkwy., Lakewood, CO 80226',
 			blurb: 'The roof is shaped like an open book.',
 			lat: 39.706475,
-			lng: -105.084184
+			lng: -105.084184,
+			visibility: ko.observable(true)
 		},
 		{
 			title: 'Belmar Park playground',
 			id: 'playground',
 			url: 'http://www.lakewood.org/BelmarPark/',
 			address: '801 S. Wadsworth Blvd., Lakewood, CO 80226',
-			blurb: 'An unusual playground with faux rocks and ropes to climb and balance on.<br>' +
-			'The rest of the park is cool, too.',
+			blurb: 'An unusual playground with faux rocks and ropes to climb and balance on.<br> The rest of the park is cool, too.',
 			lat: 39.706528,
-			lng: -105.089693
+			lng: -105.089693,
+			visibility: ko.observable(true)
 		},
 		{
 			title: 'Caution Brewing Co.',
@@ -85,7 +142,8 @@ var ViewModel = {
 			address: '1057 S. Wadsworth Blvd. #60, Lakewood, CO 80226',
 			blurb: 'Really low-key, semi-garage brewery vibe.',
 			lat: 39.698176,
-			lng: -105.082173
+			lng: -105.082173,
+			visibility: ko.observable(true)
 		},
 		{
 			title: 'Century 16 Belmar',
@@ -95,7 +153,7 @@ var ViewModel = {
 			blurb: 'Located in the sprawling Belmar shopping center.',
 			lat: 39.708582,
 			lng: -105.076251,
-			showtimes: true
+			visibility: ko.observable(true)
 		},
 		{
 			title: 'Dark Matter Games',
@@ -103,45 +161,103 @@ var ViewModel = {
 			url: 'http://dmgcolorado.com/',
 			address: '1050 S. Wadsworth Blvd., Lakewood, CO 80226',
 			blurb: 'Never been here, wonder how the selection is.',
-			lat: 39.697449,
-			lng: -105.080075
+			lat: 39.698142,
+			lng: -105.080060,
+			visibility: ko.observable(true)
 		}
-	]),
-	loadSearch: function(place, marker, infowindow, newCounter){
-		var infoTitle = place.name;
-		var placeAddress = place.formatted_address;
-		var placeLat = place.geometry.location.lat();
-		var placeLng = place.geometry.location.lng();
-		console.log(infoTitle);
-		console.log(placeAddress);
-		ViewModel.searchedMarkers.push({
-			title: infoTitle,
-			address: placeAddress,
-			lat: placeLat,
-			lng: placeLng
-		});
-		var contentString = '<div class="infoWindow">'+
-			'<h1>' + infoTitle + '</h1>' +
-			'<div class="infoWindowContent"><p><input type="button" value="save' + newCounter + '" id="save' + newCounter + '"></p></div>' +
-			'<p class="infoAddress">' + placeAddress + '</p></div>';
-		var infowindow = new google.maps.InfoWindow({
-				content: contentString
-		});
-		// add click listeners
-		View.addListeners(marker, infowindow, newCounter);
+	],
+	newMarkers: [],
+	indexFinder: function(list, markerIndex) {
+		for (var i = 0, len = list().length; i < len; i++) {
+			if (list()[i].markerIndex == markerIndex) return i;
+		}
 	},
-	unloadSearch: function(){
-		ViewModel.searchedMarkers.removeAll()
+	deleteItem: function(list, markerIndex) {
+		var deleteIndex = Model.indexFinder(list, markerIndex);
+		list()[markerIndex].marker.setMap(null);
+		list.splice(deleteIndex, 1);
 	},
-	searchedMarkers: ko.observableArray([]),
-	addMarker: function(markerTitle, markerLat, markerLng){
-		ViewModel.markers.push({
-			title: markerTitle,
-			lat: markerLat,
-			lng: markerLng
-		})
-	},
+	pushItem: function(markerIndex) {
+		var here = Model.newMarkers[markerIndex];
+		here.title = window.prompt("Please enter a title for this entry", here.title);
+		here.marker.setIcon("https://maps.gstatic.com/mapfiles/ms2/micons/red-pushpin.png");
+		viewModel.marks.push(here);
+		viewModel.addListeners(here.marker, here.infowindow, here.markerIndex);
+	}
 };
+
+var counter = 0;
+// this function gets called once the map has been loaded
+var addMarkers = function(list){
+	for (i in list) {
+		var here = list[i];
+		if (!here.blurb) {
+			here.blurb = ""
+		};
+		here.marker = new google.maps.Marker({
+			position: {lat: here.lat, lng: here.lng},
+			map: map,
+			title: here.title,
+			icon: here.icon
+		});
+		here.infowindow = new google.maps.InfoWindow({
+			content: "<h2>" + here.title + "</h2><p class='infoText'>" + here.blurb + "</p>" +
+				"<p class='infoDetails'>" + here.address + "</p>",
+		});
+		if (here.url) {
+			here.infowindow.content = here.infowindow.content + "<p class='infoWebsite'><a href='" + here.url + "'>website</a></p>";
+		}
+		viewModel.addListeners(here.marker, here.infowindow, here.markerIndex);
+		counter++;
+	}
+};
+
+var viewModel = {
+    marks: ko.observableArray(Model.masterList),
+    addedMarks: ko.observableArray(Model.newMarkers),
+	movies: ko.observableArray([]),
+
+    filterQuery: ko.observable(''),
+    addListeners: function(marker, infowindow, index) {
+    			// IIFE for click listeners
+		(function(markerCopy, infoWindowCopy, indexCopy){
+				// click listener for marker pins
+				markerCopy.addListener('click', function(){
+					infoWindowCopy.open(map, markerCopy);
+					markerCopy.setAnimation(google.maps.Animation.BOUNCE);
+				});
+				infoWindowCopy.addListener('closeclick', function(){
+					markerCopy.setAnimation(null);
+				})
+				// click listener for list of places
+				$("#" + indexCopy).click(function(){
+					infoWindowCopy.open(map, markerCopy);
+					markerCopy.setAnimation(google.maps.Animation.BOUNCE);
+				});
+			})(marker, infowindow, index);
+		},
+    search: function(value) {
+        for(var x in Model.masterList) {
+        	// hide list items and markers and close any open infowindows
+        	var here = Model.masterList[x];
+        	here.visibility(false);
+        	here.marker.setVisible(false);
+        	here.infowindow.close();
+        	// if the user enters something in the search field that matches
+        	// something in either the title or blurb of one of the objects,
+        	// that object's list item and marker are added back to the map
+        	if(here.title.toLowerCase().indexOf(value.toLowerCase()) >= 0 || here.blurb.toLowerCase().indexOf(value.toLowerCase()) >= 0) {
+            	here.visibility(true);
+            	here.marker.setVisible(true);
+        	}
+        }
+    },
+
+    };
+viewModel.filterQuery.subscribe(viewModel.search);
+
+Model.loadMarkerCount();
+ko.applyBindings(viewModel);
 
 var View = {
 	init: function(){
@@ -173,5 +289,5 @@ var View = {
 	}
 }
 
-ViewModel.init();
-
+View.init();
+Model.init();
