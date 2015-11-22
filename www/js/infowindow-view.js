@@ -212,7 +212,7 @@ var addMarkers = function(list){
 			google.maps.event.addListener(here.marker, 'dblclick', function() {
 			Model.pushItem(viewModel.addedMarks, this.markerIndex);
 			});
-			ifAdd = "<p class='tooltip'>Double-tap the icon to save to your map</p>";
+			ifAdd = "<p class='windowTip'>Double-tap the icon to save to your map</p>";
 		};
 		// build the default infoWindows
 		here.infowindow = new google.maps.InfoWindow({
