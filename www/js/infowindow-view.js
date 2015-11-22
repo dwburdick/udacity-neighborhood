@@ -200,6 +200,12 @@ var addMarkers = function(list){
 			title: here.title,
 			icon: here.icon
 		});
+		// event listener uses double-click on marker to call pushItem
+		(function(index){
+			here.marker.addListener('dblclick', function() {
+			Model.pushItem(index);
+			});
+		})(here.markerIndex);
 		here.infowindow = new google.maps.InfoWindow({
 			content: "<h2>" + here.title + "</h2><p class='infoText'>" + here.blurb + "</p>" +
 				"<p class='infoDetails'>" + here.address + "</p>",
