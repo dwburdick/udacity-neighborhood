@@ -197,9 +197,6 @@ var counter = 0;
 var addMarkers = function(list){
 	for (i in list) {
 		var here = list[i];
-		if (!here.blurb) {
-			here.blurb = ""
-		};
 		here.marker = new google.maps.Marker({
 			position: {lat: here.lat, lng: here.lng},
 			map: map,
@@ -207,14 +204,20 @@ var addMarkers = function(list){
 			icon: here.icon,
 			markerIndex: (function(indexCopy){return indexCopy})(counter)
 		});
-		// event listener uses double-click on marker to call pushItem
-		google.maps.event.addListener(here.marker, 'dblclick', function() {
+		// do a few things for items added by the user
+		var ifAdd = "";
+		if (!here.blurb) {
+			here.blurb = "";
+			// event listener uses double-click on marker to call pushItem
+			google.maps.event.addListener(here.marker, 'dblclick', function() {
 			Model.pushItem(viewModel.addedMarks, this.markerIndex);
-		});
+			});
+			ifAdd = "<p class='tooltip'>Double-tap the icon to save to your map</p>";
+		};
+		// build the default infoWindows
 		here.infowindow = new google.maps.InfoWindow({
 			content: "<h2>" + here.title + "</h2><p class='infoText'>" + here.blurb + "</p>" +
-				"<p class='infoDetails'>" + here.address + "</p>" + 
-				"<p class='tooltip'>Double-tap the icon to add to your map</p>",
+				"<p class='infoDetails'>" + here.address + "</p>" + ifAdd
 		});
 		if (here.url) {
 			here.infowindow.content = here.infowindow.content + "<p class='infoWebsite'><a href='" + here.url + "'>website</a></p>";
