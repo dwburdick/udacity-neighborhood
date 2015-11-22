@@ -58,7 +58,7 @@ function initMap() {
 			address: place.formatted_address,
 			icon: icon,
 			visibility: ko.observable(true),
-			markerIndex: counter
+			markerIndex: (function(indexCopy){return indexCopy})(counter)
 		};
 
 		Model.newMarkers.push(newMarker);
@@ -167,18 +167,25 @@ var Model = {
 		}
 	],
 	newMarkers: [],
-	indexFinder: function(list, markerIndex) {
-		for (var i = 0, len = list().length; i < len; i++) {
-			if (list()[i].markerIndex == markerIndex) return i;
-		}
-	},
 	deleteItem: function(list, markerIndex) {
-		var deleteIndex = Model.indexFinder(list, markerIndex);
-		list()[markerIndex].marker.setMap(null);
-		list.splice(deleteIndex, 1);
+		var findIndex = function() {
+			for (var i = 0, len = list().length; i < len; i++) {
+			if (list()[i].markerIndex == markerIndex) return i;
+			}
+		};
+		var foundIndex = findIndex(markerIndex);
+		viewModel.marks()[markerIndex].marker.setMap(null);
+		list.splice(foundIndex, 1);
 	},
-	pushItem: function(markerIndex) {
-		var here = Model.newMarkers[markerIndex];
+	pushItem: function(list, markerIndex) {
+		var findIndex = function() {
+			for (var i = 0, len = list().length; i < len; i++) {
+				if (list()[i].marker.markerIndex == markerIndex) return i;
+			}
+		};
+		var foundIndex = findIndex(markerIndex);
+		console.log(foundIndex);
+		var here = list()[foundIndex];
 		here.title = window.prompt("Please enter a title for this entry", here.title);
 		here.marker.setIcon("https://maps.gstatic.com/mapfiles/ms2/micons/red-pushpin.png");
 		viewModel.marks.push(here);
@@ -198,17 +205,17 @@ var addMarkers = function(list){
 			position: {lat: here.lat, lng: here.lng},
 			map: map,
 			title: here.title,
-			icon: here.icon
+			icon: here.icon,
+			markerIndex: (function(indexCopy){return indexCopy})(counter)
 		});
 		// event listener uses double-click on marker to call pushItem
-		(function(index){
-			here.marker.addListener('dblclick', function() {
-			Model.pushItem(index);
-			});
-		})(here.markerIndex);
+		google.maps.event.addListener(here.marker, 'dblclick', function() {
+			Model.pushItem(viewModel.addedMarks, this.markerIndex);
+		});
 		here.infowindow = new google.maps.InfoWindow({
 			content: "<h2>" + here.title + "</h2><p class='infoText'>" + here.blurb + "</p>" +
-				"<p class='infoDetails'>" + here.address + "</p>",
+				"<p class='infoDetails'>" + here.address + "</p>" + 
+				"<p class='tooltip'>Double-tap the icon to add to your map</p>",
 		});
 		if (here.url) {
 			here.infowindow.content = here.infowindow.content + "<p class='infoWebsite'><a href='" + here.url + "'>website</a></p>";
