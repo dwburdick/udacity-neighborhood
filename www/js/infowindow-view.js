@@ -168,6 +168,8 @@ var Model = {
 	],
 	newMarkers: [],
 	deleteItem: function(list, markerIndex) {
+		// we know what the hardcoded marker index is, need to find
+		// where it actually is in the array
 		var findIndex = function() {
 			for (var i = 0, len = list().length; i < len; i++) {
 			if (list()[i].markerIndex == markerIndex) return i;
@@ -178,6 +180,8 @@ var Model = {
 		list.splice(foundIndex, 1);
 	},
 	pushItem: function(list, markerIndex) {
+		// we know what the hardcoded marker index is, need to find
+		// where it actually is in the array
 		var findIndex = function() {
 			for (var i = 0, len = list().length; i < len; i++) {
 				if (list()[i].marker.markerIndex == markerIndex) return i;
