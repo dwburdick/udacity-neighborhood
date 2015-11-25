@@ -85,6 +85,12 @@ var Model = {
 			window.setTimeout(Model.loadMoviesArray, 900);
 		});
 	},
+	checkStorage: function(){
+		if (localStorage.getItem('savedList')) {
+			var saveArray = JSON.parse(localStorage["savedList"]);;
+			viewModel.marks = saveArray;
+		}
+	},
 	loadMarkerCount: function(){
 		for (item in Model.masterList) {
 			Model.masterList[item].markerIndex = item;
@@ -174,6 +180,7 @@ var Model = {
 		var foundIndex = findIndex(markerIndex);
 		viewModel.marks()[markerIndex].marker.setMap(null);
 		list.splice(foundIndex, 1);
+		//localStorage["savedList"] = ko.toJSON(Model.masterList);
 	},
 	pushItem: function(list, markerIndex) {
 		// we know what the hardcoded marker index is, need to find
@@ -189,9 +196,11 @@ var Model = {
 		here.marker.setIcon("https://maps.gstatic.com/mapfiles/ms2/micons/red-pushpin.png");
 		viewModel.marks.push(here);
 		viewModel.addListeners(here.marker, here.infowindow, here.markerIndex);
+		//localStorage["savedList"] = ko.toJSON(Model.masterList);
 	}
 };
 
+var prevMarker;
 var counter = 0;
 // this function gets called once the map has been loaded
 var addMarkers = function(list){
@@ -232,7 +241,6 @@ var viewModel = {
     marks: ko.observableArray(Model.masterList),
     addedMarks: ko.observableArray(Model.newMarkers),
 	movies: ko.observableArray([]),
-
     filterQuery: ko.observable(''),
     addListeners: function(marker, infowindow, index) {
     			// IIFE for click listeners
@@ -240,7 +248,11 @@ var viewModel = {
 				// click listener for marker pins
 				markerCopy.addListener('click', function(){
 					infoWindowCopy.open(map, markerCopy);
+					if (prevMarker) {
+						prevMarker.setAnimation(null);
+					};
 					markerCopy.setAnimation(google.maps.Animation.BOUNCE);
+					prevMarker = markerCopy;
 				});
 				infoWindowCopy.addListener('closeclick', function(){
 					markerCopy.setAnimation(null);
@@ -248,7 +260,11 @@ var viewModel = {
 				// click listener for list of places
 				$("#" + indexCopy).click(function(){
 					infoWindowCopy.open(map, markerCopy);
+					if (prevMarker) {
+						prevMarker.setAnimation(null);
+					};
 					markerCopy.setAnimation(google.maps.Animation.BOUNCE);
+					prevMarker = markerCopy;
 				});
 			})(marker, infowindow, index);
 		},
@@ -278,21 +294,6 @@ ko.applyBindings(viewModel);
 var View = {
 	init: function(){
 		$showtimes = $("#nowShowing");
-	},
-	addListeners: function(markerCopy, infoWindowCopy, counterCopy){
-		// click listener for marker pins
-		markerCopy.addListener('click', function(){
-			infoWindowCopy.open(map, markerCopy);
-			markerCopy.setAnimation(google.maps.Animation.BOUNCE);
-		});
-		infoWindowCopy.addListener('closeclick', function(){
-			markerCopy.setAnimation(null);
-		})
-		// click listener for list of places
-		$("#" + counterCopy).click(function(){
-			infoWindowCopy.open(map, markerCopy);
-			markerCopy.setAnimation(google.maps.Animation.BOUNCE);
-		});
 	},
 }
 
