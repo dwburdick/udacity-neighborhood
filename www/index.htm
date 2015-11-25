@@ -34,9 +34,9 @@
 							</ul>
 						</li>
 						<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Now Showing <span class="caret"></span></a>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Movies <span class="caret"></span></a>
 							<ul id="movieListItems" class="dropdown-menu">
-								<li>At Century 16 Bel Mar:</li>
+								<li><a href="http://www.cinemark.com/theatre-detail.aspx?node_id=1683&">At Century 16 Bel Mar: </a></li>
 								<!-- ko foreach: movies -->
 								<li data-bind="text:$data" class="movieTitle"></li>
 								<!-- /ko -->
@@ -44,7 +44,7 @@
 						</li>
 					</ul>
 					<form class="navbar-form navbar-right">
-						<input id="pac-input" class="form-control" data-bind="value: filterQuery, valueUpdate: 'keyup'" class="controls" type="text" placeholder="Search">
+						Add something: <input id="pac-input" class="form-control" data-bind="value: filterQuery, valueUpdate: 'keyup'" class="controls" type="text" placeholder="Search">
 					</form>
 				</div><!--/.nav-collapse -->				
 				</div>
