@@ -200,6 +200,7 @@ var Model = {
 	}
 };
 
+var prevWindow;
 var prevMarker;
 var counter = 0;
 // this function gets called once the map has been loaded
@@ -248,6 +249,10 @@ var viewModel = {
 				// click listener for marker pins
 				markerCopy.addListener('click', function(){
 					infoWindowCopy.open(map, markerCopy);
+					if (prevWindow) {
+						prevWindow.close();
+					};
+					prevWindow = infoWindowCopy;
 					if (prevMarker) {
 						prevMarker.setAnimation(null);
 					};
@@ -260,6 +265,10 @@ var viewModel = {
 				// click listener for list of places
 				$("#" + indexCopy).click(function(){
 					infoWindowCopy.open(map, markerCopy);
+					if (prevWindow) {
+						prevWindow.close();
+					};
+					prevWindow = infoWindowCopy;
 					if (prevMarker) {
 						prevMarker.setAnimation(null);
 					};
