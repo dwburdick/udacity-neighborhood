@@ -16,16 +16,16 @@ body {
 	width: 100%;
 }
 
-#movieList {
-	display: none;
-}
-
 #map {
 	height: 400px;
 }
 
-#pac-input {
-}
 .popover {
 	width: 200px;
+}
+
+#movieListItems em {
+	margin-left: 20px;
+	margin-right: 20px;
+	color: #999;
 }

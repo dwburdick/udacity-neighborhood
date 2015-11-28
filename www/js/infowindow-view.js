@@ -100,8 +100,7 @@ var Model = {
 		for (i in movies.responseJSON) {
 			viewModel.movies.push({
 				"title": movies.responseJSON[i].title, 
-				"desc": movies.responseJSON[i].shortDescription,
-				"tmsId": movies.responseJSON[i].tmsId
+				"url": movies.responseJSON[i].officialUrl
 			});
 		};
 	},
@@ -308,9 +307,6 @@ var View = {
 	init: function(){
 		$("#about").popover({
 			"trigger": "hover | focus"
-		});
-		$("#movieTitle").popover({
-			"trigger": "focus"
 		})
 	},
 }

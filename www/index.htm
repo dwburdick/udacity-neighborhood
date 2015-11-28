@@ -37,8 +37,9 @@
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Movies <span class="caret"></span></a>
 							<ul id="movieListItems" class="dropdown-menu">
 								<li><a href="http://www.cinemark.com/theatre-detail.aspx?node_id=1683&">At Century 16 Bel Mar: </a></li>
+								<em>Clicking a movie title will take you to its official website</em>
 								<!-- ko foreach: movies -->
-								<li class="movieTitle"><a href="#" data-bind="text: title" data-toggle="popover" data-placement="bottom"></a></li>
+								<li class="movieTitle"><a data-bind="text: title, attr: {href: url}"></a></li>
 								<!-- /ko -->
 							</ul>
 						</li>
