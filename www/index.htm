@@ -38,7 +38,7 @@
 							<ul id="movieListItems" class="dropdown-menu">
 								<li><a href="http://www.cinemark.com/theatre-detail.aspx?node_id=1683&">At Century 16 Bel Mar: </a></li>
 								<!-- ko foreach: movies -->
-								<li data-bind="text:$data" class="movieTitle"></li>
+								<li class="movieTitle"><a href="#" data-bind="text: title" data-toggle="popover" data-placement="bottom"></a></li>
 								<!-- /ko -->
 							</ul>
 						</li>

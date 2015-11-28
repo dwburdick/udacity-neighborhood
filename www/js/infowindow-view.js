@@ -98,7 +98,11 @@ var Model = {
 	},
 	loadMoviesArray: function(){
 		for (i in movies.responseJSON) {
-		viewModel.movies.push(movies.responseJSON[i].title);
+			viewModel.movies.push({
+				"title": movies.responseJSON[i].title, 
+				"desc": movies.responseJSON[i].shortDescription,
+				"tmsId": movies.responseJSON[i].tmsId
+			});
 		};
 	},
 	getDate: function() {
@@ -152,7 +156,7 @@ var Model = {
 			id: 'century',
 			url: 'http://www.cinemark.com/theatre-detail.aspx?node_id=1683&',
 			address: '440 S. Teller St., Lakewood, CO 80226',
-			blurb: 'Located in the sprawling Belmar shopping center.',
+			blurb: 'Located in the sprawling Belmar shopping center.<br> See what\'s showing by clicking \"Movies\" in the nav.',
 			lat: 39.708582,
 			lng: -105.076251,
 			visibility: ko.observable(true)
@@ -302,9 +306,11 @@ ko.applyBindings(viewModel);
 
 var View = {
 	init: function(){
-		$showtimes = $("#nowShowing");
 		$("#about").popover({
 			"trigger": "hover | focus"
+		});
+		$("#movieTitle").popover({
+			"trigger": "focus"
 		})
 	},
 }
