@@ -303,6 +303,9 @@ ko.applyBindings(viewModel);
 var View = {
 	init: function(){
 		$showtimes = $("#nowShowing");
+		$("#about").popover({
+			"trigger": "hover | focus"
+		})
 	},
 }
 
