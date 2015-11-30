@@ -74,11 +74,11 @@ function initMap() {
 		map.fitBounds(bounds);
 		window.onresize = function() {
 			map.fitBounds(bounds);
-		}
+		};
 	});
 	// [END region_getplaces]
 	addMarkers(Model.masterList);
-};
+}
 
 var Model = {
 	init: function() {
@@ -100,12 +100,12 @@ var Model = {
 		}
 	},
 	loadMoviesArray: function(){
-		for (i in movies.responseJSON) {
+		for (var i = 0, len = movies.responseJSON.length; i < len; i++) {
 			viewModel.movies.push({
 				"title": movies.responseJSON[i].title,
 				"url": movies.responseJSON[i].officialUrl
-			})
-		};
+			});
+		}
 	},
 	getDate: function() {
 		var today = new Date();
@@ -118,7 +118,7 @@ var Model = {
 		movies = $.ajax("http://data.tmsapi.com/v1.1/movies/showings?startDate=" +
 			date + "&numDays=1&lat=39.708582&lng=-105.076251%radius=1&units=mi&api_key=5p8sgppbuvrcwt9h6szyjy3u", {
 				error: function(){
-					$("#movieListItems").append('<li>There was a problem<br> loading the film list.</li>')
+					$("#movieListItems").append('<li>There was a problem<br> loading the film list.</li>');
 				}
 			});
 	},
@@ -231,7 +231,7 @@ var addMarkers = function(list){
 			Model.pushItem(viewModel.addedMarks, this.markerIndex);
 			});
 			ifAdd = "<p class='windowTip'>Double-tap the icon to save to your map</p>";
-		};
+		}
 		// build the default infoWindows
 		here.infowindow = new google.maps.InfoWindow({
 			content: "<h2>" + here.title + "</h2><p class='infoText'>" + here.blurb + "</p>" +
@@ -259,34 +259,34 @@ var viewModel = {
 					infoWindowCopy.open(map, markerCopy);
 					if (prevWindow) {
 						prevWindow.close();
-					};
+					}
 					prevWindow = infoWindowCopy;
 					if (prevMarker) {
 						prevMarker.setAnimation(null);
-					};
+					}
 					markerCopy.setAnimation(google.maps.Animation.BOUNCE);
 					prevMarker = markerCopy;
 				});
 				infoWindowCopy.addListener('closeclick', function(){
 					markerCopy.setAnimation(null);
-				})
+				});
 				// click listener for list of places
 				$("#" + indexCopy).click(function(){
 					infoWindowCopy.open(map, markerCopy);
 					if (prevWindow) {
 						prevWindow.close();
-					};
+					}
 					prevWindow = infoWindowCopy;
 					if (prevMarker) {
 						prevMarker.setAnimation(null);
-					};
+					}
 					markerCopy.setAnimation(google.maps.Animation.BOUNCE);
 					prevMarker = markerCopy;
 				});
 			})(marker, infowindow, index);
 		},
     search: function(value) {
-        for(var x in Model.masterList) {
+        for(var i = 0, len = Model.masterList.length; i < len; i++) {
         	// hide list items and markers and close any open infowindows
         	var here = Model.masterList[x];
         	here.visibility(false);
@@ -312,9 +312,9 @@ var View = {
 	init: function(){
 		$("#about").popover({
 			"trigger": "hover | focus"
-		})
+		});
 	},
-}
+};
 
 View.init();
 Model.init();
