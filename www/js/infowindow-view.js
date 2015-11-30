@@ -15,7 +15,7 @@ function initMap() {
 
 	// Bias the SearchBox results towards current map's viewport.
 	map.addListener('bounds_changed', function() {
-	searchBox.setBounds(map.getBounds());
+		searchBox.setBounds(map.getBounds());
 	});
 
 	var markers = [];
@@ -23,57 +23,60 @@ function initMap() {
 	// Listen for the event fired when the user selects a prediction and retrieve
 	// more details for that place.
 	searchBox.addListener('places_changed', function() {
-	var places = searchBox.getPlaces();
+		var places = searchBox.getPlaces();
 
-	if (places.length == 0) {
-	  return;
-	}
-
-	// Clear out the old markers.
-
-	if (typeof Model.newMarkers != "undefined") {
-		for (i in Model.newMarkers) {
-			Model.newMarkers[i].marker.setMap(null);
+		if (places.length === 0) {
+		  return;
 		}
-	};
 
-	// For each place, get the icon, name and location.
-	var bounds = new google.maps.LatLngBounds();
+		// Clear out the old markers.
 
-	places.forEach(function(place) {
-		var icon = {
-			url: place.icon,
-			size: new google.maps.Size(71, 71),
-			origin: new google.maps.Point(0, 0),
-			anchor: new google.maps.Point(17, 34),
-			scaledSize: new google.maps.Size(25, 25)
-		};
-
-	  // TODO: add a button that uses viewModel.pushMarker(index) to save item to map and list
-		var newMarker = {
-			title: place.name,
-			lat: place.geometry.location.lat(),
-			lng: place.geometry.location.lng(),
-			address: place.formatted_address,
-			icon: icon,
-			visibility: ko.observable(true),
-			markerIndex: (function(indexCopy){return indexCopy})(counter)
-		};
-
-		Model.newMarkers.push(newMarker);
-
-		if (place.geometry.viewport) {
-			// Only geocodes have viewport.
-			bounds.union(place.geometry.viewport);
-		} else {
-			bounds.extend(place.geometry.location);
+		if (typeof Model.newMarkers != "undefined") {
+			for (var i = 0, len = Model.newMarkers.length; i < len; i++) {
+				Model.newMarkers[i].marker.setMap(null);
+			}
 		}
-	});
-	addMarkers(Model.newMarkers);
-	map.fitBounds(bounds);
+
+		// For each place, get the icon, name and location.
+		var bounds = new google.maps.LatLngBounds();
+
+		places.forEach(function(place) {
+			var icon = {
+				url: place.icon,
+				size: new google.maps.Size(71, 71),
+				origin: new google.maps.Point(0, 0),
+				anchor: new google.maps.Point(17, 34),
+				scaledSize: new google.maps.Size(25, 25)
+			};
+
+			var newMarker = {
+				title: place.name,
+				lat: place.geometry.location.lat(),
+				lng: place.geometry.location.lng(),
+				address: place.formatted_address,
+				icon: icon,
+				visibility: ko.observable(true),
+				markerIndex: (function(indexCopy){
+					return indexCopy;
+				})(counter)
+			};
+
+			Model.newMarkers.push(newMarker);
+
+			if (place.geometry.viewport) {
+				// Only geocodes have viewport.
+				bounds.union(place.geometry.viewport);
+			} else {
+				bounds.extend(place.geometry.location);
+			}
+		});
+		addMarkers(Model.newMarkers);
+		map.fitBounds(bounds);
+		window.onresize = function() {
+			map.fitBounds(bounds);
+		}
 	});
 	// [END region_getplaces]
-
 	addMarkers(Model.masterList);
 };
 
@@ -87,21 +90,21 @@ var Model = {
 	},
 	checkStorage: function(){
 		if (localStorage.getItem('savedList')) {
-			var saveArray = JSON.parse(localStorage["savedList"]);;
+			var saveArray = JSON.parse(localStorage.savedList);
 			viewModel.marks = saveArray;
 		}
 	},
 	loadMarkerCount: function(){
-		for (item in Model.masterList) {
-			Model.masterList[item].markerIndex = item;
+		for (var i = 0, len = Model.masterList.length; i < len; i++) {
+			Model.masterList[i].markerIndex = i;
 		}
 	},
 	loadMoviesArray: function(){
 		for (i in movies.responseJSON) {
 			viewModel.movies.push({
-				"title": movies.responseJSON[i].title, 
+				"title": movies.responseJSON[i].title,
 				"url": movies.responseJSON[i].officialUrl
-			});
+			})
 		};
 	},
 	getDate: function() {
@@ -208,14 +211,16 @@ var prevMarker;
 var counter = 0;
 // this function gets called once the map has been loaded
 var addMarkers = function(list){
-	for (i in list) {
+	for (var i = 0, len = list.length; i < len; i++) {
 		var here = list[i];
 		here.marker = new google.maps.Marker({
 			position: {lat: here.lat, lng: here.lng},
 			map: map,
 			title: here.title,
 			icon: here.icon,
-			markerIndex: (function(indexCopy){return indexCopy})(counter)
+			markerIndex: (function(indexCopy){
+				return indexCopy;
+			})(counter)
 		});
 		// do a few things for items added by the user
 		var ifAdd = "";
@@ -230,7 +235,7 @@ var addMarkers = function(list){
 		// build the default infoWindows
 		here.infowindow = new google.maps.InfoWindow({
 			content: "<h2>" + here.title + "</h2><p class='infoText'>" + here.blurb + "</p>" +
-				"<p class='infoDetails'>" + here.address + "</p><p><a href='#'" + 
+				"<p class='infoDetails'>" + here.address + "</p><p><a href='#'" +
 				" onClick='Model.deleteItem(viewModel.marks," + here.markerIndex + ")'>delete</a></p>" + ifAdd
 		});
 		if (here.url) {
