@@ -45,3 +45,8 @@ body {
 	padding: 5px;
 	margin: 0px;
 }
+
+#mapListOverlay ul {
+	list-style: none;
+	padding-left: 5px;
+}
