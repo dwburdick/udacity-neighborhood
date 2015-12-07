@@ -201,6 +201,11 @@ var Model = {
 		here.title = window.prompt("Please enter a title for this entry", here.title);
 		here.marker.setIcon("https://maps.gstatic.com/mapfiles/ms2/micons/red-pushpin.png");
 		viewModel.marks.push(here);
+		here.infowindow = new google.maps.InfoWindow({
+			content: "<h2>" + here.title + "</h2><p class='infoText'>" + here.blurb + "</p>" +
+				"<p class='infoDetails'>" + here.address + "</p><p><a href='#'" +
+				" onClick='Model.deleteItem(viewModel.marks," + here.markerIndex + ")'>delete</a></p>"
+			});
 		viewModel.addListeners(here.marker, here.infowindow, here.markerIndex);
 		//localStorage["savedList"] = ko.toJSON(Model.masterList);
 	},
@@ -260,11 +265,11 @@ var viewModel = {
 				// click listener for marker pins
 				markerCopy.addListener('click', function(){
 					infoWindowCopy.open(map, markerCopy);
-					if (prevWindow) {
+					if (prevWindow && prevWindow != infoWindowCopy) {
 						prevWindow.close();
 					}
 					prevWindow = infoWindowCopy;
-					if (prevMarker) {
+					if (prevMarker && prevMarker != markerCopy) {
 						prevMarker.setAnimation(null);
 					}
 					markerCopy.setAnimation(google.maps.Animation.BOUNCE);
@@ -276,11 +281,11 @@ var viewModel = {
 				// click listener for list of places
 				$("#" + indexCopy).click(function(){
 					infoWindowCopy.open(map, markerCopy);
-					if (prevWindow) {
+					if (prevWindow && prevWindow != infoWindowCopy) {
 						prevWindow.close();
 					}
 					prevWindow = infoWindowCopy;
-					if (prevMarker) {
+					if (prevMarker && prevMarker != markerCopy) {
 						prevMarker.setAnimation(null);
 					}
 					markerCopy.setAnimation(google.maps.Animation.BOUNCE);
