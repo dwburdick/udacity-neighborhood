@@ -13,6 +13,15 @@
 </head>
 <body>
 	<div id="wrapper">
+
+		<div id="mapListOverlay">
+		<h4>My places:</h4>
+		<p>Click the "X" to remove.<br> Use search to add.</p>
+			<ul data-bind="foreach: marks" id="mapListOverlayItems">
+				<li data-bind="visible: visibility"><a href="#" data-bind="attr: {id: markerIndex}, text:title"></a> | <a href="#" class="delete" data-bind="attr: {onClick: 'Model.deleteItem(viewModel.marks, ' + markerIndex + ')'}">X</a></li>
+			</ul>
+		</div>
+
 		<nav class="navbar navbar-default navbar-static-top" id="mapNav">
 			<div class="container">
 				<div class="navbar-header">

@@ -28,3 +28,20 @@ body {
 	margin-right: 20px;
 	color: #999;
 }
+
+#mapListOverlay {
+	position: absolute;
+	background-color: white;
+	top: 70px;
+	left: 20px;
+	padding-right: 10px;
+	z-index: 99;
+	border-radius: 5px;
+	opacity: 0.9;
+}
+
+#mapListOverlay h4,
+#mapListOverlay p {
+	padding: 5px;
+	margin: 0px;
+}

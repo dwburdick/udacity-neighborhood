@@ -19,64 +19,7 @@ function initMap() {
 	});
 
 	var markers = [];
-	// [START region_getplaces]
-	// Listen for the event fired when the user selects a prediction and retrieve
-	// more details for that place.
-	searchBox.addListener('places_changed', function() {
-		var places = searchBox.getPlaces();
 
-		if (places.length === 0) {
-		  return;
-		}
-
-		// Clear out the old markers.
-
-		if (typeof Model.newMarkers != "undefined") {
-			for (var i = 0, len = Model.newMarkers.length; i < len; i++) {
-				Model.newMarkers[i].marker.setMap(null);
-			}
-		}
-
-		// For each place, get the icon, name and location.
-		var bounds = new google.maps.LatLngBounds();
-
-		places.forEach(function(place) {
-			var icon = {
-				url: place.icon,
-				size: new google.maps.Size(71, 71),
-				origin: new google.maps.Point(0, 0),
-				anchor: new google.maps.Point(17, 34),
-				scaledSize: new google.maps.Size(25, 25)
-			};
-
-			var newMarker = {
-				title: place.name,
-				lat: place.geometry.location.lat(),
-				lng: place.geometry.location.lng(),
-				address: place.formatted_address,
-				icon: icon,
-				visibility: ko.observable(true),
-				markerIndex: (function(indexCopy){
-					return indexCopy;
-				})(counter)
-			};
-
-			Model.newMarkers.push(newMarker);
-
-			if (place.geometry.viewport) {
-				// Only geocodes have viewport.
-				bounds.union(place.geometry.viewport);
-			} else {
-				bounds.extend(place.geometry.location);
-			}
-		});
-		addMarkers(Model.newMarkers);
-		map.fitBounds(bounds);
-		window.onresize = function() {
-			map.fitBounds(bounds);
-		};
-	});
-	// [END region_getplaces]
 	addMarkers(Model.masterList);
 }
 
@@ -116,10 +59,10 @@ var Model = {
 	},
 	getMovies: function() {
 		movies = $.ajax("http://data.tmsapi.com/v1.1/movies/showings?startDate=" +
-			date + "&numDays=1&lat=39.708582&lng=-105.076251%radius=1&units=mi&api_key=5p8sgppbuvrcwt9h6szyjy3u", {
-				error: function(){
-					$("#movieListItems").append('<li>There was a problem<br> loading the film list.</li>');
-				}
+			date + "&numDays=1&lat=39.708582&lng=-105.076251%radius=1&units=mi&api_key=5p8sgppbuvrcwt9h6szyjy3u",
+			{error: function(){
+				$("#movieListItems").append('<li>There was a problem<br> loading the film list.</li>');
+			}
 			});
 	},
 	masterList: [
@@ -203,6 +146,9 @@ var Model = {
 		viewModel.marks.push(here);
 		viewModel.addListeners(here.marker, here.infowindow, here.markerIndex);
 		//localStorage["savedList"] = ko.toJSON(Model.masterList);
+	},
+	copyIndex: function(indexCopy) {
+		return indexCopy;
 	}
 };
 
@@ -288,7 +234,7 @@ var viewModel = {
     search: function(value) {
         for(var i = 0, len = Model.masterList.length; i < len; i++) {
         	// hide list items and markers and close any open infowindows
-        	var here = Model.masterList[x];
+        	var here = Model.masterList[i];
         	here.visibility(false);
         	here.marker.setVisible(false);
         	here.infowindow.close();
