@@ -264,6 +264,7 @@ var viewModel = {
 		(function(markerCopy, infoWindowCopy, indexCopy){
 				// click listener for marker pins
 				markerCopy.addListener('click', function(){
+					$('#mapListOverlay').addClass('hideList');
 					infoWindowCopy.open(map, markerCopy);
 					if (prevWindow && prevWindow != infoWindowCopy) {
 						prevWindow.close();
@@ -276,6 +277,7 @@ var viewModel = {
 					prevMarker = markerCopy;
 				});
 				infoWindowCopy.addListener('closeclick', function(){
+					$('#mapListOverlay').removeClass('hideList');
 					markerCopy.setAnimation(null);
 				});
 				// click listener for list of places
