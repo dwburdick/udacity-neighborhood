@@ -6,9 +6,8 @@ body {
 }
 
 .gm-style-iw {
-	max-height: 200px;
-	max-width: 250px;
-	overflow-y: scroll !important;
+	max-height: 300px;
+	max-width: 350px;
 }
 
 #wrapper {

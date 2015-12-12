@@ -81,6 +81,9 @@ function initMap() {
 	});
 	// [END region_getplaces]
 	addMarkers(Model.masterList);
+	for (var i = 0, len = Model.masterList.length; i < len; i++) {
+		Model.getVenueId(Model.masterList[i]);
+	}
 }
 
 var Model = {
