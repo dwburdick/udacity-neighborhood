@@ -71,6 +71,9 @@ function initMap() {
 			}
 		});
 		addMarkers(Model.newMarkers);
+		for (var i = 0, len = Model.newMarkers; i < len; i++) {
+			Model.getVenueId(Model.newMarkers[i]);
+		};
 		map.fitBounds(bounds);
 		window.onresize = function() {
 			map.fitBounds(bounds);
@@ -122,7 +125,7 @@ var Model = {
 			}
 			});
 	},
-	getVenueDetails: function(venue) {
+	getVenueId: function(venue) {
 		venueSearch = $.ajax("https://api.foursquare.com/v2/venues/search" +
 			"?client_id=B2TEE3WHWJGKSPB5X3JQAGPNKPWODAUTEHJH0KSTY45OHEL0" +
 			"&client_secret=UD4ZAQJDHINPJEDW2BFONXK53XIIEXG52EHV0H24W4NSTXH2" +
@@ -134,14 +137,14 @@ var Model = {
 				console.log("no foursquare");
 				},
 			success: function(){
-				venue.id = venueSearch.responseJSON.response.venues[0].id;
+				venue.vid = venueSearch.responseJSON.response.venues[0].id;
 				Model.getVenueTips(venue);
 				}
 		});
 	},
 	getVenueTips: function(venue) {
 		var tips = $.ajax("https://api.foursquare.com/v2/venues/" +
-		venue.id + "/tips" +
+		venue.vid + "/tips" +
 		"?client_id=B2TEE3WHWJGKSPB5X3JQAGPNKPWODAUTEHJH0KSTY45OHEL0" +
 		"&client_secret=UD4ZAQJDHINPJEDW2BFONXK53XIIEXG52EHV0H24W4NSTXH2" +
 		"&v=20130815",
@@ -151,12 +154,20 @@ var Model = {
 		success: function() {
 			var returnedTips = tips.responseJSON.response.tips.items;
 			venue.tips = [];
+			var tipIntro = "<p>Tips from Foursquare:</p><ul class='foursquareTips'>"
+			var tipHTML = "<li><a href='%urlData%'>%tipString%</li>";
+			var tipList = ""
 			for (var i = 0, len = returnedTips.length; i < len; i++) {
 					venue.tips[i] = {
 						"tipUrl": returnedTips[i].canonicalUrl,
 						"tipText": returnedTips[i].text
-					}
+					};
+					newTip = tipHTML.replace("%urlData%", returnedTips[i].canonicalUrl);
+					newTip = newTip.replace("%tipString%", returnedTips[i].text);
+					tipList = tipList + newTip;
 				}
+			var tipContent = tipIntro + tipList + "</ul>";
+			venue.infowindow.content = venue.infowindow.content + tipContent;
 		}
 	})},
 	masterList: [
