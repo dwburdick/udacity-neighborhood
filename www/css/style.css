@@ -5,6 +5,12 @@ body {
 	margin: 0;
 }
 
+.gm-style-iw {
+	max-height: 200px;
+	max-width: 250px;
+	overflow-y: scroll !important;
+}
+
 #wrapper {
 	position: relative;
 	width: 100%;
