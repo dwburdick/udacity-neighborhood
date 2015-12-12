@@ -167,6 +167,9 @@ var Model = {
 					tipList = tipList + newTip;
 				}
 			var tipContent = tipIntro + tipList + "</ul>";
+			if (returnedTips.length === 0) {
+				tipContent = "<p>No tips available!</p>"
+			};
 			venue.infowindow.content = venue.infowindow.content + tipContent;
 		}
 	})},
