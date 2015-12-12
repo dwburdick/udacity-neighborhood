@@ -122,6 +122,43 @@ var Model = {
 			}
 			});
 	},
+	getVenueDetails: function(venue) {
+		venueSearch = $.ajax("https://api.foursquare.com/v2/venues/search" +
+			"?client_id=B2TEE3WHWJGKSPB5X3JQAGPNKPWODAUTEHJH0KSTY45OHEL0" +
+			"&client_secret=UD4ZAQJDHINPJEDW2BFONXK53XIIEXG52EHV0H24W4NSTXH2" +
+			"&v=20130815" +
+			"&ll=39.706475,-105.084184" +
+			"&query=" + venue.title +
+			"&limit=1",
+			{error: function(){
+				console.log("no foursquare");
+				},
+			success: function(){
+				venue.id = venueSearch.responseJSON.response.venues[0].id;
+				Model.getVenueTips(venue);
+				}
+		});
+	},
+	getVenueTips: function(venue) {
+		var tips = $.ajax("https://api.foursquare.com/v2/venues/" +
+		venue.id + "/tips" +
+		"?client_id=B2TEE3WHWJGKSPB5X3JQAGPNKPWODAUTEHJH0KSTY45OHEL0" +
+		"&client_secret=UD4ZAQJDHINPJEDW2BFONXK53XIIEXG52EHV0H24W4NSTXH2" +
+		"&v=20130815",
+		{error: function() {
+			console.log("no tips");
+			},
+		success: function() {
+			var returnedTips = tips.responseJSON.response.tips.items;
+			venue.tips = [];
+			for (var i = 0, len = returnedTips.length; i < len; i++) {
+					venue.tips[i] = {
+						"tipUrl": returnedTips[i].canonicalUrl,
+						"tipText": returnedTips[i].text
+					}
+				}
+		}
+	})},
 	masterList: [
 		{
 			title: 'Belmar Library',
