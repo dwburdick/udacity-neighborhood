@@ -156,22 +156,15 @@ var Model = {
 			},
 		success: function() {
 			var returnedTips = tips.responseJSON.response.tips.items;
-			venue.tips = [];
-			var tipIntro = "<p>Tips from Foursquare:</p><ul class='foursquareTips'>"
+			var tipIntro = "<p>One of %quantity% tips available on Foursquare:</p><ul class='foursquareTips'>"
 			var tipHTML = "<li><a href='%urlData%'>%tipString%</li>";
-			var tipList = ""
-			for (var i = 0, len = returnedTips.length; i < len; i++) {
-					venue.tips[i] = {
-						"tipUrl": returnedTips[i].canonicalUrl,
-						"tipText": returnedTips[i].text
-					};
-					newTip = tipHTML.replace("%urlData%", returnedTips[i].canonicalUrl);
-					newTip = newTip.replace("%tipString%", returnedTips[i].text);
-					tipList = tipList + newTip;
-				}
-			var tipContent = tipIntro + tipList + "</ul>";
+			var tipIndex = Math.floor(Math.random() * returnedTips.length);
+			tipIntro = tipIntro.replace("%quantity%", returnedTips.length + 1);
+			tipHTML = tipHTML.replace("%urlData%", returnedTips[tipIndex].canonicalUrl);
+			tipHTML = tipHTML.replace("%tipString%", returnedTips[tipIndex].text);
+			var tipContent = tipIntro + tipHTML + "</ul>";
 			if (returnedTips.length === 0) {
-				tipContent = "<p>No tips available!</p>"
+				tipContent = "<p>No Foursquare tips available!</p>"
 			};
 			venue.infowindow.content = venue.infowindow.content + tipContent;
 		}
