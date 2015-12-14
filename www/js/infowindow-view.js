@@ -71,9 +71,9 @@ function initMap() {
 			}
 		});
 		addMarkers(Model.newMarkers);
-		for (var i = 0, len = Model.newMarkers; i < len; i++) {
+		/* for (var i = 0, len = Model.newMarkers; i < len; i++) {
 			Model.getVenueId(Model.newMarkers[i]);
-		};
+		}; */
 		map.fitBounds(bounds);
 		window.onresize = function() {
 			map.fitBounds(bounds);
@@ -81,9 +81,9 @@ function initMap() {
 	});
 	// [END region_getplaces]
 	addMarkers(Model.masterList);
-	for (var i = 0, len = Model.masterList.length; i < len; i++) {
+	/* for (var i = 0, len = Model.masterList.length; i < len; i++) {
 		Model.getVenueId(Model.masterList[i]);
-	}
+	} */
 }
 
 var Model = {
@@ -128,6 +128,23 @@ var Model = {
 			}
 			});
 	},
+	beginTips: function(list) {
+		// create countdown list to keep track of which locations still need tips
+		pendingList = [];
+		for (i = 0, len = list.length; i < len; i++) {
+			pendingList.push(i);
+		};
+		Model.addTips(list);
+	},
+	addTips: function(list) {
+		// begin iterating through the list's venues
+		var currentIndex = pendingList.pop();
+		var currentItem = list[currentIndex];
+		// create a variable that our success function can refer back to
+		// without knowing exactly which list we first called
+		Model.workingList = list;
+		Model.getVenueId(currentItem);
+	},
 	getVenueId: function(venue) {
 		venueSearch = $.ajax("https://api.foursquare.com/v2/venues/search" +
 			"?client_id=B2TEE3WHWJGKSPB5X3JQAGPNKPWODAUTEHJH0KSTY45OHEL0" +
@@ -156,17 +173,27 @@ var Model = {
 			},
 		success: function() {
 			var returnedTips = tips.responseJSON.response.tips.items;
-			var tipIntro = "<p>One of %quantity% tips available on Foursquare:</p><ul class='foursquareTips'>"
-			var tipHTML = "<li><a href='%urlData%'>%tipString%</li>";
-			var tipIndex = Math.floor(Math.random() * returnedTips.length);
-			tipIntro = tipIntro.replace("%quantity%", returnedTips.length + 1);
-			tipHTML = tipHTML.replace("%urlData%", returnedTips[tipIndex].canonicalUrl);
-			tipHTML = tipHTML.replace("%tipString%", returnedTips[tipIndex].text);
-			var tipContent = tipIntro + tipHTML + "</ul>";
-			if (returnedTips.length === 0) {
-				tipContent = "<p>No Foursquare tips available!</p>"
+			if (returnedTips.length > 0) {
+				var tipIntro = "<p>One of <a href='%urlData%'>%quantity%</a> tips available on Foursquare:</p><ul class='foursquareTips'>"
+				var tipHTML = "<li><a href='%urlData%'>%tipString%</li>";
+				var tipIndex = Math.floor(Math.random() * returnedTips.length);
+				tipIntro = tipIntro.replace("%quantity%", returnedTips.length + 1);
+				tipIntro = tipIntro.replace("%urlData%", returnedTips[tipIndex].canonicalUrl);
+				tipHTML = tipHTML.replace("%urlData%", returnedTips[tipIndex].canonicalUrl);
+				tipHTML = tipHTML.replace("%tipString%", returnedTips[tipIndex].text);
+				venue.tipContent = tipIntro + tipHTML + "</ul>";
+			} else {
+				venue.tipContent = "<p>No Foursquare tips available!</p>";
 			};
-			venue.infowindow.content = venue.infowindow.content + tipContent;
+			venue.infowindow.content = venue.infowindow.content + venue.tipContent;
+			if (pendingList.length === 0) {
+				// if we've iterated through all pending venues, we're done
+				return;
+			} else {
+				// if there are still venues we haven't touched, start
+				// the process over
+				Model.addTips(Model.workingList);
+			}
 		}
 	})},
 	masterList: [
