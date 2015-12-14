@@ -79,6 +79,7 @@ function initMap() {
 	});
 	// [END region_getplaces]
 	addMarkers(Model.masterList);
+	Model.beginTips(Model.masterList);
 	/* for (var i = 0, len = Model.masterList.length; i < len; i++) {
 		Model.getVenueId(Model.masterList[i]);
 	} */
@@ -272,7 +273,8 @@ var Model = {
 		var here = list()[foundIndex];
 		here.marker.setIcon("https://maps.gstatic.com/mapfiles/ms2/micons/red-pushpin.png");
 		viewModel.marks.push(here);
-		Model.newMarkers.splice(foundIndex, 1);
+		var newVenue = Model.newMarkers.splice(foundIndex, 1);
+		Model.beginTips(newVenue);
 		here.infowindow = new google.maps.InfoWindow({
 			content: "<h2>" + here.title + "</h2><p class='infoText'>" + here.blurb + "</p>" +
 				"<p class='infoDetails'>" + here.address + "</p><p><a href='#'" +
@@ -324,7 +326,6 @@ var addMarkers = function(list){
 		viewModel.addListeners(here.marker, here.infowindow, here.markerIndex);
 		counter++;
 	}
-	Model.beginTips(list);
 };
 
 var viewModel = {
