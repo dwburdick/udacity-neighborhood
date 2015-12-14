@@ -90,9 +90,6 @@ var Model = {
 	init: function() {
 		Model.getDate();
 		Model.getMovies();
-		$(document).ready(function(){
-			window.setTimeout(Model.loadMoviesArray, 900);
-		});
 	},
 	checkStorage: function(){
 		if (localStorage.getItem('savedList')) {
@@ -125,6 +122,9 @@ var Model = {
 			date + "&numDays=1&lat=39.708582&lng=-105.076251%radius=1&units=mi&api_key=5p8sgppbuvrcwt9h6szyjy3u",
 			{error: function(){
 				$("#movieListItems").append('<li>There was a problem<br> loading the film list.</li>');
+			},
+			success: function() {
+				Model.loadMoviesArray();
 			}
 			});
 	},
@@ -326,6 +326,7 @@ var addMarkers = function(list){
 		viewModel.addListeners(here.marker, here.infowindow, here.markerIndex);
 		counter++;
 	}
+	Model.beginTips(list);
 };
 
 var viewModel = {
