@@ -31,10 +31,8 @@ function initMap() {
 
 		// Clear out the old markers.
 
-		if (typeof Model.newMarkers != "undefined") {
-			for (var i = 0, len = Model.newMarkers.length; i < len; i++) {
+		for (var i = 0, len = Model.newMarkers.length; i < len; i++) {
 				Model.newMarkers[i].marker.setMap(null);
-			}
 		}
 
 		// For each place, get the icon, name and location.
@@ -274,6 +272,7 @@ var Model = {
 		var here = list()[foundIndex];
 		here.marker.setIcon("https://maps.gstatic.com/mapfiles/ms2/micons/red-pushpin.png");
 		viewModel.marks.push(here);
+		Model.newMarkers.splice(foundIndex, 1);
 		here.infowindow = new google.maps.InfoWindow({
 			content: "<h2>" + here.title + "</h2><p class='infoText'>" + here.blurb + "</p>" +
 				"<p class='infoDetails'>" + here.address + "</p><p><a href='#'" +
