@@ -272,7 +272,6 @@ var Model = {
 		};
 		var foundIndex = findIndex(markerIndex);
 		var here = list()[foundIndex];
-		here.title = window.prompt("Please enter a title for this entry", here.title);
 		here.marker.setIcon("https://maps.gstatic.com/mapfiles/ms2/micons/red-pushpin.png");
 		viewModel.marks.push(here);
 		here.infowindow = new google.maps.InfoWindow({
