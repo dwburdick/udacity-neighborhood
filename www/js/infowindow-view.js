@@ -357,6 +357,7 @@ var viewModel = {
 				// click listener for list of places
 				$("#" + indexCopy).click(function(){
 					infoWindowCopy.open(map, markerCopy);
+					$('#mapListOverlay').addClass('hideList');
 					if (prevWindow && prevWindow != infoWindowCopy) {
 						prevWindow.close();
 					}
