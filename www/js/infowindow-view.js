@@ -67,9 +67,6 @@ function initMap() {
 			}
 		});
 		addMarkers(Model.newMarkers);
-		/* for (var i = 0, len = Model.newMarkers; i < len; i++) {
-			Model.getVenueId(Model.newMarkers[i]);
-		}; */
 		map.fitBounds(bounds);
 		window.onresize = function() {
 			map.fitBounds(bounds);
@@ -78,9 +75,6 @@ function initMap() {
 	// [END region_getplaces]
 	addMarkers(Model.masterList);
 	Model.beginTips(Model.masterList);
-	/* for (var i = 0, len = Model.masterList.length; i < len; i++) {
-		Model.getVenueId(Model.masterList[i]);
-	} */
 }
 
 var Model = {
