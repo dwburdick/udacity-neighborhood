@@ -359,43 +359,39 @@ var viewModel = {
 	movies: ko.observableArray([]),
 	movieError: ko.observable(false),
     filterQuery: ko.observable(''),
-    addListeners: function(marker, infowindow, index) {
-    			// IIFE for click listeners
-		(function(markerCopy, infoWindowCopy, indexCopy){
-				// click listener for marker pins
-				markerCopy.addListener('click', function(){
-					$('#mapListOverlay').addClass('hideList');
-					infoWindowCopy.open(map, markerCopy);
-					if (prevWindow && prevWindow != infoWindowCopy) {
-						prevWindow.close();
-					}
-					prevWindow = infoWindowCopy;
-					if (prevMarker && prevMarker != markerCopy) {
-						prevMarker.setAnimation(null);
-					}
-					markerCopy.setAnimation(google.maps.Animation.BOUNCE);
-					prevMarker = markerCopy;
-				});
-				infoWindowCopy.addListener('closeclick', function(){
-					$('#mapListOverlay').removeClass('hideList');
-					markerCopy.setAnimation(null);
-				});
-				// click listener for list of places
-				$("#" + indexCopy).click(function(){
-					infoWindowCopy.open(map, markerCopy);
-					$('#mapListOverlay').addClass('hideList');
-					if (prevWindow && prevWindow != infoWindowCopy) {
-						prevWindow.close();
-					}
-					prevWindow = infoWindowCopy;
-					if (prevMarker && prevMarker != markerCopy) {
-						prevMarker.setAnimation(null);
-					}
-					markerCopy.setAnimation(google.maps.Animation.BOUNCE);
-					prevMarker = markerCopy;
-				});
-			})(marker, infowindow, index);
-		},
+	listHidden: ko.observable(true),
+	addListeners: function(marker, infowindow, index) {
+	// save viewModel object to a variable
+	// so this.listVisibility is accessible within event listener functions
+	var self = this;
+	marker.addListener('click', function(){
+	    // for each location
+	    for (var i = 0; i < self.marks().length; i++) {
+	        self.marks()[i].infowindow.close(); // close infowindow
+	        self.marks()[i].marker.setAnimation(null); // stop marker animation
+	    }
+	    // for each added location
+	    for (var i = 0; i < self.addedMarks().length; i++) {
+	        self.addedMarks()[i].infowindow.close(); // close infowindow
+	        self.addedMarks()[i].marker.setAnimation(null); // stop marker animation
+	    }
+	    self.listHidden(true); // hide the list
+
+	    infowindow.open(map, marker); // open this marker's infowindow
+	    marker.setAnimation(google.maps.Animation.BOUNCE); // animate this marker
+	    // create a timeout function to stop the marker from bouncing after three bounces
+	    window.setTimeout(function() {
+	        marker.setAnimation(null);
+	    }, 1400);
+		});
+		infowindow.addListener('closeclick', function(){
+		    self.listHidden(false); // show the list again
+		    marker.setAnimation(null); // stop the marker animation
+		});
+	},
+	listItemClick: function(location) {
+	    google.maps.event.trigger(location.marker, 'click');
+	},
     search: function(value) {
         for(var i = 0, len = Model.masterList.length; i < len; i++) {
         	// hide list items and markers and close any open infowindows
