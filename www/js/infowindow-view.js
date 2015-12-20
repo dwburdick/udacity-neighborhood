@@ -1,4 +1,4 @@
-
+var map;
 
 function initMap() {
 
