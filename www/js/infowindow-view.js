@@ -1,4 +1,5 @@
-var map;
+var map,
+	pendingList;
 
 function initMap() {
 
@@ -122,9 +123,9 @@ var Model = {
 	beginTips: function(list) {
 		// create countdown list to keep track of which locations still need tips
 		pendingList = [];
-		for (i = 0, len = list.length; i < len; i++) {
+		for (var i = 0, len = list.length; i < len; i++) {
 			pendingList.push(i);
-		};
+		}
 		Model.addTips(list);
 	},
 	addTips: function(list) {
@@ -137,7 +138,7 @@ var Model = {
 		Model.getVenueId(currentItem);
 	},
 	getVenueId: function(venue) {
-		venueSearch = $.ajax("https://api.foursquare.com/v2/venues/search" +
+		var venueSearch = $.ajax("https://api.foursquare.com/v2/venues/search" +
 			"?client_id=B2TEE3WHWJGKSPB5X3JQAGPNKPWODAUTEHJH0KSTY45OHEL0" +
 			"&client_secret=UD4ZAQJDHINPJEDW2BFONXK53XIIEXG52EHV0H24W4NSTXH2" +
 			"&v=20130815" +
@@ -145,7 +146,8 @@ var Model = {
 			"&query=" + venue.title +
 			"&limit=1",
 			{error: function(){
-				console.log("no foursquare");
+				venue.tipContent = "<p>Problem retrieving Foursquare data.</p>";
+				venue.infowindow.content = venue.infowindow.content + venue.tipContent;
 				},
 			success: function(){
 				venue.vid = venueSearch.responseJSON.response.venues[0].id;
@@ -160,7 +162,8 @@ var Model = {
 		"&client_secret=UD4ZAQJDHINPJEDW2BFONXK53XIIEXG52EHV0H24W4NSTXH2" +
 		"&v=20130815",
 		{error: function() {
-			console.log("no tips");
+			venue.tipContent = "<p>Problem retrieving Foursquare data.</p>";
+			venue.infowindow.content = venue.infowindow.content + venue.tipContent;
 			},
 		success: function() {
 			var returnedTips = tips.responseJSON.response.tips.items;
@@ -275,6 +278,36 @@ var Model = {
 		viewModel.addListeners(here.marker, here.infowindow, here.markerIndex);
 		//localStorage["savedList"] = ko.toJSON(Model.masterList);
 	},
+	saveItems: function() {
+		var cache = [];
+			localStorage.savedList = JSON.stringify(Model.masterList, function(key, value) {
+				if (typeof value === 'object' && value !== null) {
+					if (cache.indexOf(value) !== -1) {
+					// Circular reference found, discard key
+					return;
+					}
+				// Store value in our collection
+				cache.push(value);
+				}
+				return value;
+			});
+		cache = null; // Enable garbage collection
+	},
+/*	loadItems: function() {
+		var cache = [];
+			Model.masterList = JSON.parse(localStorage.savedList, function(key, value) {
+				if (typeof value === 'object' && value !== null) {
+					if (cache.indexOf(value) !== -1) {
+					// Circular reference found, discard key
+					return;
+					}
+				// Store value in our collection
+				cache.push(value);
+				}
+				return value;
+			});
+		cache = null; // Enable garbage collection
+	},  */
 	copyIndex: function(indexCopy) {
 		return indexCopy;
 	}
