@@ -1,6 +1,9 @@
 ###Neighborhood web app###
 ######originally created for Udacity coursework######
 
+To run the app, clone or download the repository and 
+open `index.html` in your browser.
+
 You can customize it for your neighborhood by changing out the 
 `masterList` objects for places near you, along with the default 
 start location of the map and the theater chosen for the movie
