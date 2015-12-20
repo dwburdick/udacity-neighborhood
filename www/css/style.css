@@ -21,7 +21,7 @@ body {
 }
 
 #map {
-	height: 400px;
+	height: 100vh;
 }
 
 .popover {

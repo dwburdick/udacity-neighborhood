@@ -1,6 +1,4 @@
-$(function () {
-	$("#map").css("height", $(window).height());
-});
+
 
 function initMap() {
 
