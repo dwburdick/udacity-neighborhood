@@ -47,6 +47,7 @@
 							<ul id="movieListItems" class="dropdown-menu scrollable-menu">
 								<li><a href="http://www.cinemark.com/theatre-detail.aspx?node_id=1683&">At Century 16 Bel Mar: </a></li>
 								<em>Clicking a movie title will take you to its official website</em>
+								<li class="movieError" data-bind="visible: movieError">There was a problem<br> loading the film list.</li>
 								<!-- ko foreach: movies -->
 								<li class="movieTitle"><a data-bind="text: title, attr: {href: url}"></a></li>
 								<!-- /ko -->

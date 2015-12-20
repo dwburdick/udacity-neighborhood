@@ -112,7 +112,7 @@ var Model = {
 		movies = $.ajax("http://data.tmsapi.com/v1.1/movies/showings?startDate=" +
 			date + "&numDays=1&lat=39.708582&lng=-105.076251%radius=1&units=mi&api_key=5p8sgppbuvrcwt9h6szyjy3u",
 			{error: function(){
-				$("#movieListItems").append('<li>There was a problem<br> loading the film list.</li>');
+				viewModel.movieError(true);;
 			},
 			success: function() {
 				Model.loadMoviesArray();
@@ -324,6 +324,7 @@ var viewModel = {
     marks: ko.observableArray(Model.masterList),
     addedMarks: ko.observableArray(Model.newMarkers),
 	movies: ko.observableArray([]),
+	movieError: ko.observable(false),
     filterQuery: ko.observable(''),
     addListeners: function(marker, infowindow, index) {
     			// IIFE for click listeners
