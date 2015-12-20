@@ -313,8 +313,6 @@ var Model = {
 	}
 };
 
-var prevWindow;
-var prevMarker;
 var counter = 0;
 // this function gets called once the map has been loaded
 var addMarkers = function(list){
